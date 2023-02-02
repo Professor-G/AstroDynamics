@@ -8,13 +8,13 @@ from setuptools import setup, find_packages, Extension
 
 
 setup(
-    name="Hydrodynamic_Codes",
+    name="AstroDynamics",
     version="0.1",
     author="Daniel Godines",
     author_email="danielgodinez123@gmail.com",
     description="Codes for hydrodynamics"
     license='GPL-3.0',
-    url = "https://github.com/Professor-G/Hydrodynamic_Codes",
+    url = "https://github.com/Professor-G/AstroDynamics",
     classifiers=[
 		'Development Status :: 5 - Production/Stable',
 		'Intended Audience :: Developers',

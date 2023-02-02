@@ -17,16 +17,14 @@ To load the the scripts as general modules, clone the repository and do a local 
 The program or the modules can then be imported directly:
 
 ```python
-import astrodynamics
+import AstroDynamics
 ```
 
 ```python
-from astrodynamics import orbit 
+from AstroDynamics import orbits
 ```
 
-
 # Documentation
-
 For technical details and an example of how to run the methods, check out the [Documentation](https://astrodynamics.readthedocs.io/en/latest/index.html).
 
 
