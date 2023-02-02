@@ -13,7 +13,7 @@ Pages
 .. toctree::
    :maxdepth: 1
 
-   source/Excercise_1
+   source/Orbital_Mechanics
    source/Excercise_2
 
 Documentation
