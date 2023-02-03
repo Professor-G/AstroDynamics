@@ -5,7 +5,26 @@
 
 Welcome to the documentation!
 ===============================
-Numerical Methods for Astrodynamical Systems.
+Numerical Methods for Astrodynamical Systems. 
+
+Work in progress.
+
+Installation
+==================
+
+Clone the development version:
+
+.. code-block:: bash
+
+    git clone https://github.com/Professor-G/AstroDynamics.git
+    cd AstroDynamics
+    pip install .
+
+The modules can then be loaded directly:
+
+.. code-block:: python
+
+    from AstroDynamics import *
 
 Pages
 ==================

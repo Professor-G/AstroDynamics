@@ -80,13 +80,8 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
 
     orbit.tend = 1e4
     orbit.m = 1e-3
+    orbit.x = np.array([0., 0., 1.])
     orbit._run_()
-
-    orbit.path='/Users/daniel/Desktop/'
-    orbit.plot_orbit(savefig=True)
-    orbit.plot_energy(savefig=True)
-    orbit.plot_momentum(savefig=True)
-
 
 Excercises
 ==================
