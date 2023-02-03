@@ -11,48 +11,54 @@ class orbit:
   The methods are used to calculate the orbital elements of
   the system including the energy and angular momentum at each timestep.
 
-  Notes:
-    The inputs must be in code units!
+  Notes
+  -----
+  The inputs must be in code units!
 
-  Args:
-    M (float): Mass of the star.
-    m (float): Mass of the planet.
-    X (np.ndarray): Initial position vector of the star.
-    x (np.ndarray): Initial position vector of the planet.
-    V (np.ndarray): Initial velocity vector of the star.
-    v (np.ndarray): Initial velocity vector of the planet.
-    dt (float): Timestep to use for the integration.
-    tend (float): Number of timesteps.
-    integrator (str): Integrator to use, options include 'euler' and ...
+  Parameters
+  ----------
+  M (float): Mass of the star.
+  m (float): Mass of the planet.
+  X (np.ndarray): Initial position vector of the star.
+  x (np.ndarray): Initial position vector of the planet.
+  V (np.ndarray): Initial velocity vector of the star.
+  v (np.ndarray): Initial velocity vector of the planet.
+  dt (float): Timestep to use for the integration.
+  tend (float): Number of timesteps.
+  integrator (str): Integrator to use, options include 'euler' and ...
 
-  Attributes:
-    integration_time (float): The integration duration in seconds.
-    energy (np.ndarray): Energy of the system, which in principle should be
-      conserved at all timesteps.
-    h (np.ndarray): Angular momentum of the system, which in principle should be
-      conserved at all timesteps.
-    X_vec (np.ndarray): The x-position of the star as a function of the integrated time. 
-    Y_vec (np.ndarray): The y-position of the star as a function of the integrated time.
-    x_vec (np.ndarray): The x-position of the planet as a function of the integrated time. 
-    y_vec (np.ndarray): The y-position of the planet as a function of the integrated time. 
-    path (str): The absolute path to the directory where the images should be saved.
+  Attributes
+  ----------
+  integration_time (float): The integration duration in seconds.
+  energy (np.ndarray): Energy of the system, which in principle should be
+    conserved at all timesteps.
+  h (np.ndarray): Angular momentum of the system, which in principle should be
+    conserved at all timesteps.
+  X_vec (np.ndarray): The x-position of the star as a function of the integrated time. 
+  Y_vec (np.ndarray): The y-position of the star as a function of the integrated time.
+  x_vec (np.ndarray): The x-position of the planet as a function of the integrated time. 
+  y_vec (np.ndarray): The y-position of the planet as a function of the integrated time. 
+  path (str): The absolute path to the directory where the images should be saved.
 
-  Methods:
-    _run_(): Calculates the orbital characteristics, this is run
-      once when a class object is initialized, and must be called manually
-      if the class parameters are updated. 
+  Methods
+  -------
+  _run_(): Calculates the orbital characteristics, this is run
+    once when a class object is initialized, and must be called manually
+    if the class parameters are updated. 
 
-    euler_integrator(): Integrates using the Euler method.
+  euler_integrator(): Integrates using the Euler method.
 
-    calc_energy(r, Vx, vx, Vy, vy): Calculates the energy of the two-body system at a given snapshot.
+  calc_energy(r, Vx, vx, Vy, vy): Calculates the energy of the two-body system at a given timestamp.
 
-    calc_momentum(r, Vx, Vy): Calculates the momentum of the two-body system at a given snapshot.
+  calc_momentum(r, Vx, Vy): Calculates the momentum of the two-body system at a given timestamp.
+  
+  plot_orbit(savefig=False): Plots the orbital motion of both bodies.
 
-    plot_orbit(savefig=False): Plots the data_x parameter space using t-SNE
+  plot_energy(savefig=False): Plots the energy evolution of the system as a 
+    function of integration time, which should in principle be conserved.
 
-    plot_energy(savefig=False): Plots the confusion matrix, assessed with data_x.
-
-    plot_momentum(savefig=False): Plots ROC curve, assessed with data_x
+  plot_momentum(savefig=False): Plots the angular momentum evolution of the 
+    system as a function of integration time, which should in principle be conserved.
   """
 
   def __init__(self, M, m, X, x, V, v, dt, tend, integrator):
@@ -140,15 +146,17 @@ class orbit:
     Calculates the energy of the system using the velocity
     and position vectors.
 
-    Args:
-      r (float): The length of the vector connecting both bodies.
-      Vx (float): The x-component of the star's velocity vector.
-      vx (float): The x-component of the planet's velocity vector.
-      Vy (float): The y-component of the star's velocity vector.
-      vy (float): The y-component of the planet's velocity vector.
+    Parameters
+    ----------
+    r (float): The length of the vector connecting both bodies.
+    Vx (float): The x-component of the star's velocity vector.
+    vx (float): The x-component of the planet's velocity vector.
+    Vy (float): The y-component of the star's velocity vector.
+    vy (float): The y-component of the planet's velocity vector.
 
-    Returns:
-      Energy of the two-body system at the input positions. 
+    Returns
+    -------
+    Energy of the two-body system at the input positions. 
     """
 
     Vtot, vtot = np.sqrt(Vx**2 + Vy**2), np.sqrt(vx**2 + vy**2)
@@ -161,13 +169,15 @@ class orbit:
     Calculates the angular momentum given a set of 
     velocity vectors and the separation distance.
 
-    Args:
-      r (float): The length of the vector connecting both bodies.
-      Vx (float): The x-component of the star's velocity vector.
-      Vy (float): The y-component of the star's velocity vector.
+    Parameters
+    ----------
+    r (float): The length of the vector connecting both bodies.
+    Vx (float): The x-component of the star's velocity vector.
+    Vy (float): The y-component of the star's velocity vector.
 
-    Returns:
-      The angular momentum at the specified timestamp.
+    Returns
+    -------
+    The angular momentum at the specified timestamp.
     """
 
     phi = np.arctan((self.x[1] - self.X[1]) / self.x[0] - self.X[0])
@@ -181,13 +191,15 @@ class orbit:
     """
     Plots the XY position of the star and the planet's orbit.
     
-    Args:
-      savefig (bool): If True the image will be saved to the
-        home directory, unless a path attribute is set. Defaults
-        to False which will instead output the figure.
+    Parameters
+    ----------
+    savefig (bool): If True the image will be saved to the
+      home directory, unless a path attribute is set. Defaults
+      to False which will instead output the figure.
 
-    Returns:
-      AxesImage
+    Returns
+    -------
+    AxesImage
     """
 
     plt.plot(self.x_vec, self.y_vec, 'blue', label = 'Earth')
@@ -210,13 +222,15 @@ class orbit:
     Plots the energy of the system as a function of the
     integration timesteps.
 
-    Args:
-      savefig (bool): If True the image will be saved to the
-        home directory, unless a path attribute is set. Defaults
-        to False which will instead output the figure.
+    Parameters
+    ----------
+    savefig (bool): If True the image will be saved to the
+      home directory, unless a path attribute is set. Defaults
+      to False which will instead output the figure.
 
-    Returns:
-      AxesImage
+    Returns
+    -------
+    AxesImage
     """
 
     energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
@@ -240,13 +254,15 @@ class orbit:
     Plots the energy of the system as a function of the
     integration timesteps.
     
-    Args:
-      savefig (bool): If True the image will be saved to the
-        home directory, unless a path attribute is set. Defaults
-        to False which will instead output the figure.
+    Parameters
+    ----------
+    savefig (bool): If True the image will be saved to the
+      home directory, unless a path attribute is set. Defaults
+      to False which will instead output the figure.
 
-    Returns:
-        AxesImage
+    Returns
+    -------
+    AxesImage
     """
 
     h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
