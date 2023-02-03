@@ -173,7 +173,7 @@ The higher the timestep, the lower the error!
 
 **(5)** Time the code with the acceleration given by :math:`\frac{r_{vec}}{r^3}` vs :math:`\frac{r_{hat}}{r^2}`. State the performance in microseconds per timestep.
 
-The class instance contains the ``approx`` attribute which determines whether the acceleration is approximated as one over :math:`r^3` or whether it's calculated as the unit vector divded by :math:`r^2`.
+The class instance contains the ``approx`` attribute which determines whether the acceleration is approximated as one over :math:`r^3` or whether it's calculated as the unit vector divided by :math:`r^2`.
 
 .. code-block:: python
 
