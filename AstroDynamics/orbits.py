@@ -13,6 +13,8 @@ class orbit:
   Note: The inputs must be in code units.
 
   Args:
+      approx (bool): If True then the acceleration will be calculated using the 1/r^3 approximation
+        in which the unit vector is abosorbed by the denominator.
       M (float): Mass of the star.
       m (float): Mass of the planet.
       X (np.ndarray): Initial position vector of the star.
@@ -37,17 +39,18 @@ class orbit:
 
   """
 
-  def __init__(self, M, m, X, x, V, v, dt, tend, integrator):
+  def __init__(self, approx=True, M, m, X, x, V, v, dt, tend, integrator):
+    self.approx = approx
     self.M = M  
     self.m = m  
     self.X = X 
     self.x = x  
     self.V = V 
-    self.v = v 
-    self.integrator = integrator 
+    self.v = v
     self.dt = dt  
     self.tend = tend 
-
+    self.integrator = integrator 
+    
     self.init_params = np.c_[X, x, V, v]
     self.path = str(Path.home()) + '/'
     self._run_()
@@ -76,6 +79,9 @@ class orbit:
 
   def euler_integrator(self):
     """Executes the Euler integration method and calculates time taken to complete.
+    
+    Args:  
+        None
 
     Returns:
         None
@@ -95,11 +101,8 @@ class orbit:
 
     for t in self.timesteps:
 
-      #Earth's acceleration
-      a = -self.M*(self.x-self.X)/np.linalg.norm(self.x-self.X)**3
-      
-      #Sun's acceleration
-      A = -self.m*(self.X-self.x)/np.linalg.norm(self.X-self.x)**3 
+      #Calculate the acceleration
+      a, A = self.calc_acceleration(self.approx)
 
       #Update positions and velocities at each timestamp
       self.x = self.x + self.v*self.dt
@@ -130,6 +133,29 @@ class orbit:
     self.h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
 
     return 
+
+
+  def calc_acceleration(self):
+    """Calculates the acceleration of both bodies
+
+    Args:
+        None
+
+    Returns:
+        float: Two floats, the acceleration of the planet and
+            the acceleration of the star, respectively.
+    """
+    if self.approx:     
+        #Earth and Sun acceleration
+        a = -self.M*(self.x-self.X)/np.sqrt(np.sum(np.square(self.x - self.X)))#np.linalg.norm(self.x-self.X)**3
+        A = -self.m*(self.X-self.x)/np.sqrt(np.sum(np.square(self.X - self.x)))#np.linalg.norm(self.X-self.x)**3 
+    else: #Need to calculate the unit vectors
+        r1, r2 = np.sqrt(np.sum(np.square(self.x - self.X))), np.sqrt(np.sum(np.square(self.X - self.x)))
+        u1, u2 = (self.x - self.X) / r1, (self.X - self.x) / r2
+        a = - self.G * self.M * u1 / (r1**2)
+        A = - self.G * self.m * u2 / (r2**2)
+
+    return a, A 
 
   def calc_energy(self, r, Vx, vx, Vy, vy):
     """Calculates the energy of the two-body system.
