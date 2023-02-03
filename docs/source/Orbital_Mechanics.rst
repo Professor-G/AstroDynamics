@@ -36,11 +36,6 @@ Below is an example of how to run the Euler integrator using different integrati
 
     orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
 
-.. figure:: _static/intialization_1.png
-    :align: center
-    :class: with-shadow with-border
-    :width: 1600px
-|
 The ``plot_orbit`` method plots the position of the star and the planet in the x-y plane. The planet's position is stored in the x_vec and y_vec attributes and the star's position is stored in the X_vec and Y_vec attributes.
 
 .. code-block:: python
