@@ -12,7 +12,7 @@ setup(
     version="0.1",
     author="Daniel Godines",
     author_email="danielgodinez123@gmail.com",
-    description="Codes for hydrodynamics"
+    description="Numerical Methods for Hydrodynamical Systems",
     license='GPL-3.0',
     url = "https://github.com/Professor-G/AstroDynamics",
     classifiers=[
@@ -23,7 +23,7 @@ setup(
 		'Programming Language :: Python :: 3',	   
 ],
     packages=find_packages('.'),
-    install_requires = ['numpy'],
+    install_requires = ['numpy', 'matplotlib', 'progress'],
     python_requires='>=3.7,<4',
     include_package_data=True,
     test_suite="nose.collector",
