@@ -132,16 +132,14 @@ Excercises
     
     import matplotlib.pyplot as plt 
 
-    orbit.dt = 1e-2
-    orbit._run_()
-    energy_1, timesteps_1 = orbit.energy_error, orbit.timesteps
+    energies, timesteps = [],[]
+    for dt in [1e-2, 1e-4]:
+        orbit.dt = dt 
+        orbit._run_()
+        energies.append(orbit.energy_error), timesteps.append(orbit.timesteps)
 
-    orbit.dt = 1e-4
-    orbit._run_()
-    energy_2, timesteps_2 = orbit.energy_error, orbit.timesteps
-
-    plt.plot(timesteps_1, energy_1, label=r'$\Delta t = 10^{-2}$')
-    plt.plot(timesteps_2, energy_2, label=r'$\Delta t = 10^{-4}$')
+    plt.plot(timesteps[0], energies[0], label=r'$\Delta t = 10^{-2}$')
+    plt.plot(timesteps[1], energies[1], label=r'$\Delta t = 10^{-4}$')
     plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
     plt.yscale('log')
     plt.legend(prop={'size':14})
