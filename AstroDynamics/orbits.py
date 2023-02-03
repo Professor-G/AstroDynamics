@@ -13,8 +13,6 @@ class orbit:
   Note: The inputs must be in code units.
 
   Args:
-      approx (bool): If True then the acceleration will be calculated using the 1/r^3 approximation
-        in which the unit vector is abosorbed by the denominator. Defaults to True.
       M (float): Mass of the star.
       m (float): Mass of the planet.
       X (np.ndarray): Initial position vector of the star.
@@ -24,6 +22,8 @@ class orbit:
       dt (float): Timestep to use for the integration.
       tend (int): Number of timesteps.
       integrator (str): Integrator to use, options include 'euler' and ...
+      approx (bool): If True then the acceleration will be calculated using the 1/r^3 approximation
+        in which the unit vector is abosorbed by the denominator. Defaults to True.
 
   Attributes:
       integration_time (float): The integration duration in seconds.
@@ -40,7 +40,6 @@ class orbit:
   """
 
   def __init__(self, M, m, X, x, V, v, dt, tend, integrator, approx=True):
-    self.approx = approx
     self.M = M  
     self.m = m  
     self.X = X 
@@ -50,6 +49,7 @@ class orbit:
     self.dt = dt  
     self.tend = tend 
     self.integrator = integrator 
+    self.approx = approx
     
     self.init_params = np.c_[X, x, V, v]
     self.path = str(Path.home()) + '/'
