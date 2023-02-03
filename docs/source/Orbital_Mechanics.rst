@@ -79,7 +79,7 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
     orbit._run_()
 
 Excercises
-==================
+------------------
 
 **(1)** Use :math:`\Delta` t = 1e-3, up to t = 100.  Plot the energy error in log, against time.
 
