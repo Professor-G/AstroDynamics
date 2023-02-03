@@ -25,7 +25,7 @@ from AstroDynamics import orbits
 ```
 
 # Documentation
-For technical details and an example of how to run the methods, check out the [Documentation](https://astrodynamics.readthedocs.io/en/latest/index.html).
+For technical details and excercises demonstrating how to run the methods, check out the [Documentation](https://astro-dynamics.readthedocs.io/en/latest/).
 
 
 # How to Contribute?
