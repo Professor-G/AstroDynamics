@@ -127,9 +127,9 @@ class orbit:
       com = self.calc_com()
 
       #Velocity of center of mass calculation
-      comv = self.calc_vcom(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+      com_vel = self.calc_vcom(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
 
-      self.energy.append(energy), self.h.append(h), self.com_pos.append(com), self.com_vel.append(comv)
+      self.energy.append(energy), self.h.append(h), self.com_pos.append(com), self.com_vel.append(com_vel)
       progess_bar.next()
 
     end_time = time.time()
