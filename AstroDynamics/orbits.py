@@ -246,8 +246,7 @@ class orbit:
     return 
 
 def _set_style_():
-  """
-  Function to configure the matplotlib.pyplot style.
+  """Function to configure the matplotlib.pyplot style.
   This function is called before any images are saved.
   """
   plt.rcParams["xtick.color"] = "323034"
