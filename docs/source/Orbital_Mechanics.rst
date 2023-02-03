@@ -40,7 +40,7 @@ Below is an example of how to run the Euler integrator using different integrati
     :align: center
     :class: with-shadow with-border
     :width: 1600px
-
+|
 The ``plot_orbit`` method plots the position of the star and the planet in the x-y plane. The planet's position is stored in the x_vec and y_vec attributes and the star's position is stored in the X_vec and Y_vec attributes.
 
 .. code-block:: python
@@ -62,7 +62,6 @@ The ``calc_energy`` method calculates the energy of the system given the velocit
     :align: center
     :class: with-shadow with-border
     :width: 1600px
-
 
 The ``calc_momentum`` method calculates the angular momentum of the system given the velocity vectors and the separation distance between the two bodies. It uses the x and y components of the velocity vectors of the star, calculates the velocity of the planet relative to the star, calculates the :math:`\phi` angle and angular velocity, and finally computes the angular momentum by multiplying the square of the separation distance and the angular velocity. The ``plot_momentum`` method plots the error in the angular momentum of the system as a function of the integration time steps.
 
@@ -91,7 +90,7 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
 Excercises
 ==================
 
-**(1)## Use :math: `\Delta t`=:math:`10^{-3}`, up to :math:`t`=100.  Plot the energy error in log, against time.
+**(1)** **Use :math: `\Delta t 10^{-3}`, up to :math:`t = 100`.  Plot the energy error in log, against time.**
 
 .. code-block:: python
 
@@ -111,13 +110,13 @@ Excercises
     orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
     orbit.plot_orbit()
 
-**(2)** Plot the angular momentum error vs time. 
+**(2)** **Plot the angular momentum error vs time.**
 
 .. code-block:: python
 
     orbit.plot_momentum()
 
-**(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta t`=:math:`10^{-4}`, and :math:`\Delta t`=:math:`10^{-2}`. Explain the trend.
+**(3)** **Compare the energy error vs time for the run above, with runs using :math:`\Delta t 10^{-4}`, and :math:`\Delta t = 10^{-2}`. Explain the trend.**
 
 .. code-block:: python
     
@@ -134,8 +133,27 @@ Excercises
     plt.plot(timesteps_1, energy_1, label=r'$\Delta t = 10^{-2}$')
     plt.plot(timesteps_2, energy_2, label=r'$\Delta t = 10^{-4}$')
     plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
+    plt.yscale('log')
     plt.legend(prop={'size':14})
     plt.show()
+
+**(4)** **Plot the energy error after 1 orbit for different timesteps: :math:`10^{-4}, 10^{-3}` and `:math:10^{-2}`.**
+
+.. code-block:: python
+
+    orbit.tend = 1.0
+
+    for timestep in [1e-4, 1e-3, 1e-2]:
+        orbit.dt = timestep
+        orbit._run_()
+        plt.plot(1, orbit.energy_error, label=r'$\Delta t$=str(timestep))
+
+    plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
+    plt.yscale('log')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+**(5)** **Time the code with the acceleration given by :math:`\frac{1}{r^2}` vs :math:`\frac{1}{r^3}`. State the performance in microseconds per timestep.**
 
 
 
