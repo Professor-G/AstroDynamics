@@ -110,11 +110,21 @@ Excercises
     orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
     orbit.plot_orbit()
 
+.. figure:: _static/orbit_plot_1.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px
+
 **(2)** Plot the angular momentum error vs time.
 
 .. code-block:: python
 
     orbit.plot_momentum()
+
+.. figure:: _static/momentum_plot_1.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px
 
 **(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta` t = 1e-4, and :math:`\Delta` t = 1e-2. Explain the trend.
 
@@ -137,21 +147,31 @@ Excercises
     plt.legend(prop={'size':14})
     plt.show()
 
+.. figure:: _static/energy_plot_2.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px
+    
 **(4)** Plot the energy error after 1 orbit for three different timesteps: 1e-4, 1e-3, 1e-2.
 
 .. code-block:: python
 
     orbit.tend = 1.0
 
-for timestep in [1e-4, 1e-3, 1e-2]:
-    orbit.dt = timestep
-    orbit._run_()
-    plt.plot(np.arange(0, orbit.tend, orbit.dt), orbit.energy_error, label=r'$\Delta t$='+str(timestep))
+    for timestep in [1e-4, 1e-3, 1e-2]:
+        orbit.dt = timestep
+        orbit._run_()
+        plt.plot(np.arange(0, orbit.tend, orbit.dt), orbit.energy_error, label=r'$\Delta t$='+str(timestep))
 
     plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
     plt.yscale('log')
     plt.legend(prop={'size':14})
     plt.show()
+
+.. figure:: _static/energy_plot_3.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px
 
 **(5)** Time the code with the acceleration given by :math:`\frac{r_{vec}}{r^3}` vs :math:`\frac{r_{hat}}{r^2}`. State the performance in microseconds per timestep.
 
