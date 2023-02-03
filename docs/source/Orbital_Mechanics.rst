@@ -128,6 +128,8 @@ Excercises
 
 **(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta` t = 1e-4, and :math:`\Delta` t = 1e-2. Explain the trend.
 
+The higher the timestep, the lower the error!
+
 .. code-block:: python
     
     import matplotlib.pyplot as plt 
@@ -179,13 +181,25 @@ The class instance contains the ``approx`` attribute which determines whether th
         orbit.dt = timestep
         orbit.approx = True
         orbit._run_()
-        r2.append(orbit.integration_time)
+        r3.append(orbit.integration_time*1e6/len(orbit.timesteps))
         orbit.approx = False
         orbit._run_()
-        r3.append(orbit.integration_time)
+        r2.append(orbit.integration_time*1e6/len(orbit.timesteps))
         
+    plt.plot([1e-4, 1e-3, 1e-2], r2, 'ro-', label=r'$\frac{1}{r^2}$')
+    plt.plot([1e-4, 1e-3, 1e-2], r3, 'b*--', label=r'$\frac{1}{r^3}$')
+    plt.xlabel(r'$\Delta t$', size=17), plt.ylabel(r'$\mu s$ / $\Delta t$', size=17)
+    plt.legend(prop={'size':14})
+    plt.show()
 
+.. figure:: _static/a_plot.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px
 
+**(6)** Plot the position and velocity of the center of mass, against time. 
+
+**(7)** How would you modify your code to eliminate the evolution of the center of mass?
 
 
 
