@@ -6,8 +6,7 @@ from pathlib import Path
 from progress import bar  
 
 class orbit:
-  """
-  Numerical techniques for solving the two-body problem.
+  """Numerical techniques for solving the two-body problem.
   The methods are used to calculate the orbital elements of
   the system including the energy and angular momentum at each timestep.
 
@@ -17,15 +16,24 @@ class orbit:
 
   Parameters
   ----------
-  M (float): Mass of the star.
-  m (float): Mass of the planet.
-  X (np.ndarray): Initial position vector of the star.
-  x (np.ndarray): Initial position vector of the planet.
-  V (np.ndarray): Initial velocity vector of the star.
-  v (np.ndarray): Initial velocity vector of the planet.
-  dt (float): Timestep to use for the integration.
-  tend (float): Number of timesteps.
-  integrator (str): Integrator to use, options include 'euler' and ...
+  M : `float` 
+    Mass of the star.
+  m : `float` 
+    Mass of the planet.
+  X : `np.ndarray`
+  `Initial position vector of the star.
+  x : `np.ndarray`
+    Initial position vector of the planet.
+  V : `np.ndarray`
+    Initial velocity vector of the star.
+  v : `np.ndarray`
+    Initial velocity vector of the planet.
+  dt : `float`
+    Timestep to use for the integration.
+  tend : `int` 
+    Number of timesteps.
+  integrator : `str` 
+    Integrator to use, options include 'euler' and ...
 
   Attributes
   ----------
