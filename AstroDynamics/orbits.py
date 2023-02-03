@@ -14,7 +14,7 @@ class orbit:
 
   Args:
       approx (bool): If True then the acceleration will be calculated using the 1/r^3 approximation
-        in which the unit vector is abosorbed by the denominator.
+        in which the unit vector is abosorbed by the denominator. Defaults to True.
       M (float): Mass of the star.
       m (float): Mass of the planet.
       X (np.ndarray): Initial position vector of the star.
@@ -39,7 +39,7 @@ class orbit:
 
   """
 
-  def __init__(self, approx=True, M, m, X, x, V, v, dt, tend, integrator):
+  def __init__(self, M, m, X, x, V, v, dt, tend, integrator, approx=True):
     self.approx = approx
     self.M = M  
     self.m = m  
@@ -134,9 +134,8 @@ class orbit:
 
     return 
 
-
   def calc_acceleration(self):
-    """Calculates the acceleration of both bodies
+    """Calculates the acceleration of both bodies at a given position.
 
     Args:
         None
