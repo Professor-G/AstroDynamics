@@ -50,7 +50,7 @@ class orbit:
     self.tend = tend 
     self.integrator = integrator 
     self.approx = approx
-    
+
     self.init_params = np.c_[X, x, V, v]
     self.path = str(Path.home()) + '/'
     self._run_()
@@ -102,7 +102,7 @@ class orbit:
     for t in self.timesteps:
 
       #Calculate the acceleration
-      a, A = self.calc_acceleration(self.approx)
+      a, A = self.calc_acceleration()
 
       #Update positions and velocities at each timestamp
       self.x = self.x + self.v*self.dt
