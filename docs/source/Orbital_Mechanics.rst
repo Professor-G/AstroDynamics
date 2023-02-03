@@ -143,17 +143,17 @@ Excercises
 
     orbit.tend = 1.0
 
-    for timestep in [1e-4, 1e-3, 1e-2]:
-        orbit.dt = timestep
-        orbit._run_()
-        plt.plot(1, orbit.energy_error, label=r'$\Delta t$=str(timestep))
+for timestep in [1e-4, 1e-3, 1e-2]:
+    orbit.dt = timestep
+    orbit._run_()
+    plt.plot(np.arange(0, orbit.tend, orbit.dt), orbit.energy_error, label=r'$\Delta t$='+str(timestep))
 
     plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
     plt.yscale('log')
     plt.legend(prop={'size':14})
     plt.show()
 
-**(5)** Time the code with the acceleration given by :math:`\frac{r_vec}{r^3}` vs :math:`\frac{r_hat}{r^2}`. State the performance in microseconds per timestep.
+**(5)** Time the code with the acceleration given by :math:`\frac{r_{vec}}{r^3}` vs :math:`\frac{r_{hat}}{r^2}`. State the performance in microseconds per timestep.
 
 
 
