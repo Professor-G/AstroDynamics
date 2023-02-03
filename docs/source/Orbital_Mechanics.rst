@@ -20,14 +20,14 @@ In this excercise the two-body system of the Sun and Earth is used to compare th
     V, v = np.array([0., 0., 0.]), np.array([0., 1., 0.])
     
 
-where :math:`dt` and :math:`tend` correspond to the timestep and the number of steps to take during the integration, respectively. The orbit object can then be created using the `orbit <https://astro-dynamics.readthedocs.io/en/latest/autoapi/AstroDynamics/orbits/index.html#AstroDynamics.orbits.orbit>`_ class. 
+The orbit object can then be created using the `orbit <https://astro-dynamics.readthedocs.io/en/latest/autoapi/AstroDynamics/orbits/index.html#AstroDynamics.orbits.orbit>`_ class. 
 
 Different integrators are useful for different types of systems. For example, the fourth-order Hermite integrator is optimal for star cluster dynamics while symplectic integrators such as the Wisdom-Holman integrator are often used for secular evolution of planetary systems. **The simplest integrator is the forward Euler integration scheme, which calculates the expected position and velocity of an object by assuming it drifts at a uniform velocity during a small time interval**. 
 
 
 Euler Integrator
 ------------------
-Below is an example of how to run the Euler integrator using different integration parameters:
+Below is an example of how to run the Euler integrator using different integration parameters, where :math:`dt` and :math:`tend` correspond to the timestep and the number of steps to take during the integration, respectively:
 
 .. code-block:: python
 	
