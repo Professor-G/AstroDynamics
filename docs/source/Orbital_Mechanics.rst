@@ -79,7 +79,6 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
 
 .. code-block:: python
 
-    orbit.dt = 1e-4
     orbit.tend = 1e4
     orbit._run_()
 
@@ -87,6 +86,56 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
     orbit.plot_orbit(savefig=True)
     orbit.plot_energy(savefig=True)
     orbit.plot_momentum(savefig=True)
+
+
+Excercises
+==================
+
+**(1)## Use :math: `\Delta t`=:math:`10^{-3}`, up to :math:`t`=100.  Plot the energy error in log, against time.
+
+.. code-block:: python
+
+    import numpy as np
+    from AstroDynamics import orbits
+    
+    #capital letters = SUN, lower case = EARTH
+    M, m = 1.0, 3.0e-6
+    X = np.array([0., 0., 0.])
+    V = np.array([0., 0., 0.])
+    x = np.array([1., 0., 0.])
+    v = np.array([0., 1., 0.])
+
+    dt = 1e-3
+    tend = 100.
+    
+    orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
+    orbit.plot_orbit()
+
+**(2)** Plot the angular momentum error vs time. 
+
+.. code-block:: python
+
+    orbit.plot_momentum()
+
+**(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta t`=:math:`10^{-4}`, and :math:`\Delta t`=:math:`10^{-2}`. Explain the trend.
+
+.. code-block:: python
+    
+    import matplotlib.pyplot as plt 
+
+    orbit.dt = 1e-2
+    orbit._run_()
+    energy_1, timesteps_1 = orbit.energy_error, orbit.timesteps
+
+    orbit.dt = 1e-4
+    orbit._run_()
+    energy_2, timesteps_2 = orbit.energy_error, orbit.timesteps
+
+    plt.plot(timesteps_1, energy_1, label=r'$\Delta t = 10^{-2}$')
+    plt.plot(timesteps_2, energy_2, label=r'$\Delta t = 10^{-4}$')
+    plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
+    plt.legend(prop={'size':14})
+    plt.show()
 
 
 
