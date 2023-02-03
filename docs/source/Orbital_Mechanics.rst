@@ -90,7 +90,7 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
 Excercises
 ==================
 
-**(1)** **Use :math: `\Delta t 10^{-3}`, up to :math:`t = 100`.  Plot the energy error in log, against time.**
+**(1)** Use :math:`\Delta`t = 1e-3, up to t = 100.  Plot the energy error in log, against time.
 
 .. code-block:: python
 
@@ -110,13 +110,13 @@ Excercises
     orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
     orbit.plot_orbit()
 
-**(2)** **Plot the angular momentum error vs time.**
+**(2)** Plot the angular momentum error vs time.
 
 .. code-block:: python
 
     orbit.plot_momentum()
 
-**(3)** **Compare the energy error vs time for the run above, with runs using :math:`\Delta t 10^{-4}`, and :math:`\Delta t = 10^{-2}`. Explain the trend.**
+**(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta`t = 1e-4, and :math:`\Delta`t = 1e-2`. Explain the trend.
 
 .. code-block:: python
     
@@ -137,7 +137,7 @@ Excercises
     plt.legend(prop={'size':14})
     plt.show()
 
-**(4)** **Plot the energy error after 1 orbit for different timesteps: :math:`10^{-4}, 10^{-3}` and `:math:10^{-2}`.**
+**(4)** Plot the energy error after 1 orbit for three different timesteps: 1e-4, 1e-3, 1e-2.
 
 .. code-block:: python
 
@@ -153,7 +153,7 @@ Excercises
     plt.legend(prop={'size':14})
     plt.show()
 
-**(5)** **Time the code with the acceleration given by :math:`\frac{1}{r^2}` vs :math:`\frac{1}{r^3}`. State the performance in microseconds per timestep.**
+**(5)** Time the code with the acceleration given by :math:`\frac{1}{r^2}` vs :math:`\frac{1}{r^3}`. State the performance in microseconds per timestep.
 
 
 
