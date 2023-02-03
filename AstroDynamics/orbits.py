@@ -141,8 +141,7 @@ class orbit:
         None
 
     Returns:
-        float: Two floats, the acceleration of the planet and
-            the acceleration of the star, respectively.
+        float: Two floats, the acceleration of the planet and the acceleration of the star, respectively.
     """
     if self.approx:     
         #Earth and Sun acceleration
@@ -151,8 +150,8 @@ class orbit:
     else: #Need to calculate the unit vectors
         r1, r2 = np.sqrt(np.sum(np.square(self.x - self.X))), np.sqrt(np.sum(np.square(self.X - self.x)))
         u1, u2 = (self.x - self.X) / r1, (self.X - self.x) / r2
-        a = - self.G * self.M * u1 / (r1**2)
-        A = - self.G * self.m * u2 / (r2**2)
+        a = -self.M * u1 / (r1**2)
+        A = -self.m * u2 / (r2**2)
 
     return a, A 
 
