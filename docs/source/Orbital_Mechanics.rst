@@ -170,6 +170,24 @@ Excercises
 
 **(5)** Time the code with the acceleration given by :math:`\frac{r_{vec}}{r^3}` vs :math:`\frac{r_{hat}}{r^2}`. State the performance in microseconds per timestep.
 
+The class instance contains the ``approx`` attribute which determines whether the acceleration is approximated as one over :math:`r^3` or whether it's calculated as the unit vector divded by :math:`r^2`.
+
+.. code-block:: python
+
+    r2, r3 = [],[]
+    for timestep in [1e-4, 1e-3, 1e-2]:
+        orbit.dt = timestep
+        orbit.approx = True
+        orbit._run_()
+        r2.append(orbit.integration_time)
+        orbit.approx = False
+        orbit._run_()
+        r3.append(orbit.integration_time)
+        
+
+
+
+
 
 
 
