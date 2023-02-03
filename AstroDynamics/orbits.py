@@ -66,6 +66,7 @@ class orbit:
     self.dt = dt  
     self.tend = tend 
 
+    self.init_params = np.c_[X, x, V, v]
     self.path = str(Path.home()) + '/'
     self._run_()
 
@@ -88,6 +89,9 @@ class orbit:
     out the time taken to complete. The time is saved
     and can be loaded using `integration_time` attribute.
     """
+
+    #To ensure the initial conditions are reset if need-be
+    self.X, self.x, self.V, self.v = np.transpose(self.init_params)
 
     #Energy quantity and postion vectors to save values
     self.energy, self.h, self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[],[],[]
@@ -186,12 +190,11 @@ class orbit:
       AxesImage
     """
 
-    plt.figure(figsize =(10,10))
     plt.plot(self.x_vec, self.y_vec, 'blue', label = 'Earth')
     plt.plot(self.X_vec, self.Y_vec, 'orange', label = "Sun")
-    plt.xlabel("X Position", fontsize = 17)
-    plt.ylabel("Y Position", fontsize = 17)
-    plt.legend(fontsize = 12)
+    plt.xlabel("X Position")
+    plt.ylabel("Y Position")
+    plt.legend()
     if savefig is False:
       plt.show()
     else:
@@ -218,10 +221,9 @@ class orbit:
 
     energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
 
-    plt.figure(figsize =(10,10))
     plt.plot(np.arange(0, self.tend, self.dt), energy_error, 'blue', marker = '*')
-    plt.ylabel(r'$\Delta \rm E / \rm E$', fontsize = 17)
-    plt.xlabel('Time', fontsize = 17)
+    plt.ylabel(r'$\Delta \rm E / \rm E$')
+    plt.xlabel('Time')
     plt.yscale('log')
     if savefig is False:
       plt.show()
@@ -249,10 +251,9 @@ class orbit:
 
     h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
 
-    plt.figure(figsize =(10,10))
     plt.plot(np.arange(0, self.tend, self.dt), h_error, 'blue', marker = '*')
-    plt.ylabel(r'$\Delta \rm h / \rm h$', fontsize = 17)
-    plt.xlabel('Time', fontsize = 17)
+    plt.ylabel(r'$\Delta \rm h / \rm h$')
+    plt.xlabel('Time')
     plt.yscale('log')
     if savefig is False:
       plt.show()
