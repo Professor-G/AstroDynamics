@@ -135,7 +135,7 @@ Excercises
     for dt in [1e-2, 1e-4]:
         orbit.dt = dt 
         orbit._run_()
-        plt.plot(orbit.timesteps, orbit.energy_error, label=r'$\Delta t ='+str(dt))
+        plt.plot(orbit.timesteps, orbit.energy_error, label=r'$\Delta t$ ='+str(dt))
 
     plt.xlabel('Time', size=17), plt.ylabel(r'$\Delta \rm E / \rm E$', size=17)
     plt.yscale('log')
