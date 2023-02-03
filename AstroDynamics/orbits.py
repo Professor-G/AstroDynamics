@@ -90,7 +90,7 @@ class orbit:
     self.energy, self.h, self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[],[],[]
 
     self.timesteps = np.arange(0, self.tend, self.dt)
-    progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(timesteps))
+    progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(self.timesteps))
     start_time = time.time()
 
     for t in self.timesteps:
