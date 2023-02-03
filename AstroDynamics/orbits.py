@@ -89,12 +89,14 @@ class orbit:
     Saves time taken to complete in `self.integration_time`.
     """
 
-    #To ensure the initial conditions are reset if need-be
+    #To ensure the initial conditions are reset
     self.X, self.x, self.V, self.v = np.transpose(self.init_params)
 
-    #Energy quantity and postion vectors to save values
-    self.energy, self.h, self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[],[],[]
+    #Postion vectors to save values
+    self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[]
 
+    self.energy, self.h, self.com_pos, self.com_vel = [],[],[],[]
+    
     self.timesteps = np.arange(0, self.tend, self.dt)
     progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(self.timesteps))
     start_time = time.time()
@@ -121,7 +123,13 @@ class orbit:
       #Momentum calculation
       h = self.calc_momentum(r=r, Vx=self.V[0], Vy=self.V[1])
 
-      self.energy.append(energy), self.h.append(h)
+      #Center of mass calculation
+      com = self.calc_com()
+
+      #Velocity of center of mass calculation
+      comv = self.calc_vcom(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+
+      self.energy.append(energy), self.h.append(h), self.com_pos.append(com), self.com_vel.append(comv)
       progess_bar.next()
 
     end_time = time.time()
@@ -156,7 +164,7 @@ class orbit:
     return a, A 
 
   def calc_energy(self, r, Vx, vx, Vy, vy):
-    """Calculates the energy of the two-body system.
+    """Calculates the energy of the two-body system, assuming z-components are zero!
 
     Args:
         r (float): The length of the vector connecting both bodies.
@@ -173,6 +181,47 @@ class orbit:
     energy = self.m*(vtot**2)/2.0 + self.M*(Vtot**2)/2.0 - self.m*self.M/r
     
     return energy
+
+  def calc_com(self):
+    """Calculates the norm of the center of mass vector at a given timestep.
+    
+    Args:
+        None
+
+    Returns:
+        float: The length of the center of mass position vector.
+    """
+
+    tot_mass = (self.M + self.m)
+
+    x = (self.M * self.X[0] + self.m * self.x[0]) / tot_mass
+    y = (self.M * self.X[1] + self.m * self.x[1]) / tot_mass
+    z = (self.M * self.X[2] + self.m * self.x[2]) / tot_mass
+
+    r = np.array([x,y,z])
+
+    return np.sqrt(np.dot(r, r))  
+
+  def calc_vcom(self, Vx, vx, Vy, vy):
+    """Calculates the velocity of the center of mass of the two objects.
+
+    Args:
+        Vx (float): The x-component of the star's velocity vector.
+        vx (float): The x-component of the planet's velocity vector.
+        Vy (float): The y-component of the star's velocity vector.
+        vy (float): The y-component of the planet's velocity vector.
+
+    Returns:
+        float: The velocity of the center of mass.
+    """
+
+    V, v = np.array([Vx, Vy]), np.array([vx, vy])
+    total_momentum = self.M * V + self.m * v
+
+    #p=mv
+    vel = total_momentum / (self.M + self.m)  
+    
+    return np.sqrt(np.dot(vel, vel))
 
   def calc_momentum(self, r, Vx, Vy):
     """Calculates the angular momentum of the system.
@@ -193,6 +242,54 @@ class orbit:
 
     return h 
 
+  def plot_com(self, savefig=False):
+    """Plots the XY position of the star and the planet's orbit.
+
+    Args:
+        savefig (bool, optional): If True, the image will be saved to the home directory, 
+            unless a path attribute is set. Defaults to False, which will output the figure.
+
+    Returns:
+        AxesImage: The resulting plot.
+    """
+
+    plt.plot(self.timesteps, self.com_pos, 'blue', marker = '*')
+    plt.ylabel('C.O.M. Position'), plt.xlabel('Time')
+    plt.yscale('log')
+    if savefig is False:
+      plt.show()
+    else:
+      _set_style_()
+      plt.savefig(self.path+'com_plot.png', bbox_inches='tight', dpi=300)
+      plt.clf(), plt.style.use('default')
+      print('Image saved in: {}'.format(self.path))
+
+    return 
+
+  def plot_vcom(self, savefig=False):
+    """Plots the XY position velocity of the star and the planet's orbit.
+
+    Args:
+        savefig (bool, optional): If True, the image will be saved to the home directory, 
+            unless a path attribute is set. Defaults to False, which will output the figure.
+
+    Returns:
+        AxesImage: The resulting plot.
+    """
+
+    plt.plot(self.timesteps, self.com_vel, 'blue', marker = '*')
+    plt.ylabel('C.O.M. Velocity'), plt.xlabel('Time')
+    plt.yscale('log')
+    if savefig is False:
+      plt.show()
+    else:
+      _set_style_()
+      plt.savefig(self.path+'vcom_plot.png', bbox_inches='tight', dpi=300)
+      plt.clf(), plt.style.use('default')
+      print('Image saved in: {}'.format(self.path))
+
+    return 
+
   def plot_orbit(self, savefig=False):
     """Plots the XY position of the star and the planet's orbit.
 
@@ -206,8 +303,7 @@ class orbit:
 
     plt.plot(self.x_vec, self.y_vec, 'blue', label = 'Earth')
     plt.plot(self.X_vec, self.Y_vec, 'orange', label = "Sun")
-    plt.xlabel("X Position")
-    plt.ylabel("Y Position")
+    plt.xlabel("X Position"), plt.ylabel("Y Position")
     plt.legend()
     if savefig is False:
       plt.show()
