@@ -93,7 +93,7 @@ pygments_style = None
 #
 # html_theme_options = {}
 html_static_path = ["./source/_static"]
-#html_logo = "_static/.png"
+#html_logo = "./source/_static/pyBIA_logo.png"
 #html_theme_options = {"logo_only": True}
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -115,7 +115,7 @@ html_static_path = ["./source/_static"]
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'astrodynamicsdoc'
+htmlhelp_basename = 'AstroDynamicsdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -143,7 +143,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'AstroDynamics.tex', 'AstroDynamics Documentation',
-     'DGodines', 'manual'),
+     'Daniel Godines', 'manual'),
 ]
 
 
@@ -152,7 +152,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'AstroDynamics', 'AstroDynamics Documentation',
+    (master_doc, 'astrodynamics', 'AstroDynamics Documentation',
      [author], 1)
 ]
 
@@ -164,7 +164,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'AstroDynamics', 'AstroDynamics Documentation',
-     author, 'AstroDynamics', 'Miscellaneous'),
+     author, 'AstroDynamics', 'Numerical methods for astrodynamics', 
+     'Miscellaneous'),
 ]
 
 
