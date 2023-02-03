@@ -10,7 +10,7 @@ class orbit:
   Calculates orbital characteristics
 
   Note:
-    The inputs should be in code units!
+    The inputs must be in code units!
 
   Args:
     M (float): Mass of the star.
@@ -19,22 +19,40 @@ class orbit:
     x (ndarray): Initial position vector of the planet.
     V (ndarray): Initial velocity vector of the star.
     v (ndarray): Initial velocity vector of the planet.
-    dt (float): Timestep, defaults to 0.001.
-    tend (float): Number of timesteps, defaults to 1000.
-    integrator (str): Integrator to use.
-
+    dt (float): Timestep to use for the integration.
+    tend (float): Number of timesteps.
+    integrator (str): Integrator to use, options include 'euler'
+      and ...
+  
   Attributes:
-    _run_ : Calculates the orbital characteristics, this is run
+    integration_time (float): The integration duration in seconds.
+    energy (float): Energy of the system, which in principle should be
+      conserved at all timesteps.
+    h (float): Angular momentum of the system, which in principle should be
+      conserved at all timesteps.
+    X_vec (ndarray): The x-position of the star as a function of the integrated time. 
+    Y_vec (ndarray): The y-position of the star as a function of the integrated time.
+    x_vec (ndarray): The x-position of the planet as a function of the integrated time. 
+    y_vec (ndarray): The y-position of the planet as a function of the integrated time. 
+    path (str): The absolute path to the directory where the images should be saved.
+
+  Methods:
+
+    _run_() : Calculates the orbital characteristics, this is run
       once when a class object is initialized, and must be called manually
       if the class parameters are updated. 
 
-    euler_integrator (ndarray): Integrates using the Euler method.
+    euler_integrator() : Integrates using the Euler method.
+    
+    calc_energy(r, Vx, vx, Vy, vy): Calculates the energy of the two-body system at a given snapshot.
 
-    plot_orbit (AxesImage): Plots the data_x parameter space using t-SNE
+    calc_momentum(r, Vx, Vy): Calculates the momentum of the two-body system at a given snapshot.
 
-    plot_energy (AxesImage): Plots the confusion matrix, assessed with data_x.
+    plot_orbit(savefig=False): Plots the data_x parameter space using t-SNE
 
-    plot_momentum (AxesImage): Plots ROC curve, assessed with data_x
+    plot_energy(savefig=False): Plots the confusion matrix, assessed with data_x.
+
+    plot_momentum(savefig=False): Plots ROC curve, assessed with data_x
 
   """
 
@@ -54,21 +72,21 @@ class orbit:
 
   def _run_(self):
     """
-    Function that calls and executes using the assigned integrator.
-    This function must be called directly if the class parameters
+    Method to run the assigned integrator. This method 
+    must be called directly if the class parameters
     are updated after initialization. 
     """
     if isinstance(self.integrator, str) is False:
-      raise ValueError('No integrator input!')
+      raise ValueError("integrator parameter must be 'euler' or !")
 
     if self.integrator == 'euler':
       self.euler_integrator()
 
   def euler_integrator(self):
     """
-    Excecutes the Euler integration method
-    and prints out the time taken to complete. The
-    time is saved and can be loaded using .integration_time
+    Excecutes the Euler integration method and prints 
+    out the time taken to complete. The time is saved 
+    and can be loaded using ``integration_time'' attribute.
     """
 
     #Energy quantity and postion vectors to save values
@@ -94,6 +112,7 @@ class orbit:
 
       self.x_vec.append(self.x[0]), self.y_vec.append(self.x[1])
       self.X_vec.append(self.X[0]), self.Y_vec.append(self.X[1])
+
       r = np.sqrt((self.x[0] - self.X[0])**2 + (self.x[1] - self.X[1])**2)
       
       #Energy calculation
@@ -135,7 +154,8 @@ class orbit:
 
   def calc_momentum(self, r, Vx, Vy):
     """
-    Calculates the angular momentum given a set of position and velocity vectors.
+    Calculates the angular momentum given a set of 
+    velocity vectors and the separation distance.
 
     Args:
       r (float): The length of the vector connecting both bodies.
@@ -155,7 +175,7 @@ class orbit:
 
   def plot_orbit(self, savefig=False):
     """
-    Plots the X & Y positions of the star and planet's orbit.
+    Plots the XY position of the star and the planet's orbit.
 
     Returns:
       AxesImages
