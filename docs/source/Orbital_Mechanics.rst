@@ -188,7 +188,25 @@ The class instance contains the ``approx`` attribute which determines whether th
     :class: with-shadow with-border
     :width: 1600px
 
-**(6)** Plot the position and velocity of the center of mass, against time. 
+**(6)** Plot the position and velocity of the center of mass, against time.
+
+.. code-block:: python
+
+    orbit.plot_com()
+
+.. figure:: _static/com_plot.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+
+.. code-block:: python
+
+    orbit.plot_vcom()
+    
+.. figure:: _static/vcom_plot.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
 
 **(7)** How would you modify your code to eliminate the evolution of the center of mass?
 
