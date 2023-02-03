@@ -7,43 +7,43 @@ from progress import bar
 
 class orbit:
   """
-  Calculates orbital characteristics
+  Numerical techniques for solving the two-body problem.
+  The methods are used to calculate the orbital elements of
+  the system including the energy and angular momentum at each timestep.
 
-  Note:
+  Notes:
     The inputs must be in code units!
 
   Args:
     M (float): Mass of the star.
     m (float): Mass of the planet.
-    X (ndarray): Initial position vector of the star
-    x (ndarray): Initial position vector of the planet.
-    V (ndarray): Initial velocity vector of the star.
-    v (ndarray): Initial velocity vector of the planet.
+    X (np.ndarray): Initial position vector of the star.
+    x (np.ndarray): Initial position vector of the planet.
+    V (np.ndarray): Initial velocity vector of the star.
+    v (np.ndarray): Initial velocity vector of the planet.
     dt (float): Timestep to use for the integration.
     tend (float): Number of timesteps.
-    integrator (str): Integrator to use, options include 'euler'
-      and ...
-  
+    integrator (str): Integrator to use, options include 'euler' and ...
+
   Attributes:
     integration_time (float): The integration duration in seconds.
-    energy (float): Energy of the system, which in principle should be
+    energy (np.ndarray): Energy of the system, which in principle should be
       conserved at all timesteps.
-    h (float): Angular momentum of the system, which in principle should be
+    h (np.ndarray): Angular momentum of the system, which in principle should be
       conserved at all timesteps.
-    X_vec (ndarray): The x-position of the star as a function of the integrated time. 
-    Y_vec (ndarray): The y-position of the star as a function of the integrated time.
-    x_vec (ndarray): The x-position of the planet as a function of the integrated time. 
-    y_vec (ndarray): The y-position of the planet as a function of the integrated time. 
+    X_vec (np.ndarray): The x-position of the star as a function of the integrated time. 
+    Y_vec (np.ndarray): The y-position of the star as a function of the integrated time.
+    x_vec (np.ndarray): The x-position of the planet as a function of the integrated time. 
+    y_vec (np.ndarray): The y-position of the planet as a function of the integrated time. 
     path (str): The absolute path to the directory where the images should be saved.
 
   Methods:
-
-    _run_() : Calculates the orbital characteristics, this is run
+    _run_(): Calculates the orbital characteristics, this is run
       once when a class object is initialized, and must be called manually
       if the class parameters are updated. 
 
-    euler_integrator() : Integrates using the Euler method.
-    
+    euler_integrator(): Integrates using the Euler method.
+
     calc_energy(r, Vx, vx, Vy, vy): Calculates the energy of the two-body system at a given snapshot.
 
     calc_momentum(r, Vx, Vy): Calculates the momentum of the two-body system at a given snapshot.
@@ -53,7 +53,6 @@ class orbit:
     plot_energy(savefig=False): Plots the confusion matrix, assessed with data_x.
 
     plot_momentum(savefig=False): Plots ROC curve, assessed with data_x
-
   """
 
   def __init__(self, M, m, X, x, V, v, dt, tend, integrator):
@@ -72,9 +71,10 @@ class orbit:
 
   def _run_(self):
     """
-    Method to run the assigned integrator. This method 
-    must be called directly if the class parameters
-    are updated after initialization. 
+    Calculate the orbital characteristics.
+
+    This method must be called directly if the class parameters
+    are updated after initialization.
     """
     if isinstance(self.integrator, str) is False:
       raise ValueError("integrator parameter must be 'euler' or !")
@@ -84,9 +84,9 @@ class orbit:
 
   def euler_integrator(self):
     """
-    Excecutes the Euler integration method and prints 
-    out the time taken to complete. The time is saved 
-    and can be loaded using ``integration_time'' attribute.
+    Execute the Euler integration method and print
+    out the time taken to complete. The time is saved
+    and can be loaded using `integration_time` attribute.
     """
 
     #Energy quantity and postion vectors to save values
@@ -176,9 +176,14 @@ class orbit:
   def plot_orbit(self, savefig=False):
     """
     Plots the XY position of the star and the planet's orbit.
+    
+    Args:
+      savefig (bool): If True the image will be saved to the
+        home directory, unless a path attribute is set. Defaults
+        to False which will instead output the figure.
 
     Returns:
-      AxesImages
+      AxesImage
     """
 
     plt.figure(figsize =(10,10))
@@ -202,8 +207,13 @@ class orbit:
     Plots the energy of the system as a function of the
     integration timesteps.
 
+    Args:
+      savefig (bool): If True the image will be saved to the
+        home directory, unless a path attribute is set. Defaults
+        to False which will instead output the figure.
+
     Returns:
-      AxesImages
+      AxesImage
     """
 
     energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
@@ -227,9 +237,14 @@ class orbit:
     """
     Plots the energy of the system as a function of the
     integration timesteps.
+    
+    Args:
+      savefig (bool): If True the image will be saved to the
+        home directory, unless a path attribute is set. Defaults
+        to False which will instead output the figure.
 
     Returns:
-        AxesImages
+        AxesImage
     """
 
     h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
@@ -297,4 +312,6 @@ def _set_style_():
   plt.rcParams["figure.titlesize"] = 18
   plt.rcParams["figure.autolayout"] = True
   plt.rcParams["figure.dpi"] = 300
+
+  return
 
