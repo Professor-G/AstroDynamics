@@ -243,7 +243,7 @@ class orbit:
     return h 
 
   def plot_com(self, savefig=False):
-    """Plots the XY position of the star and the planet's orbit.
+    """Plots the COM position of the star and the planet's orbit.
 
     Args:
         savefig (bool, optional): If True, the image will be saved to the home directory, 
@@ -267,7 +267,7 @@ class orbit:
     return 
 
   def plot_vcom(self, savefig=False):
-    """Plots the XY position velocity of the star and the planet's orbit.
+    """Plots the COM velocity of the star and the planet's orbit.
 
     Args:
         savefig (bool, optional): If True, the image will be saved to the home directory, 
