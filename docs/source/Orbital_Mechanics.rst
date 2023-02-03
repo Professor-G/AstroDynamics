@@ -166,6 +166,7 @@ The higher the timestep, the lower the error!
 The class instance contains the ``approx`` attribute which determines whether the acceleration is approximated as one over :math:`r^3` or whether it's calculated as the unit vector divided by :math:`r^2`.
 
 .. code-block:: python
+
     r2, r3 = [],[]
     for timestep in [1e-4, 1e-3, 1e-2]:
         orbit.dt = timestep
