@@ -90,7 +90,7 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
 Excercises
 ==================
 
-**(1)** Use :math:`\Delta`t = 1e-3, up to t = 100.  Plot the energy error in log, against time.
+**(1)** Use :math:`\Delta` t = 1e-3, up to t = 100.  Plot the energy error in log, against time.
 
 .. code-block:: python
 
@@ -116,7 +116,7 @@ Excercises
 
     orbit.plot_momentum()
 
-**(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta`t = 1e-4, and :math:`\Delta`t = 1e-2`. Explain the trend.
+**(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta` t = 1e-4, and :math:`\Delta` t = 1e-2. Explain the trend.
 
 .. code-block:: python
     
@@ -153,7 +153,7 @@ Excercises
     plt.legend(prop={'size':14})
     plt.show()
 
-**(5)** Time the code with the acceleration given by :math:`\frac{1}{r^2}` vs :math:`\frac{1}{r^3}`. State the performance in microseconds per timestep.
+**(5)** Time the code with the acceleration given by :math:`\frac{r_vec}{r^3}` vs :math:`\frac{r_hat}{r^2}`. State the performance in microseconds per timestep.
 
 
 
