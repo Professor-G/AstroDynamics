@@ -3,7 +3,7 @@
 # AstroDynamics: 
 This repository contains numerical methods for solving Magnetohydrodynamics and the dynamics of gravitating systems, including Celestial, Stellar and Fluid Mechanics.
 
-Modules are written in Python with additional implementations in cJulia, Fortran90 and C++.
+Modules are written in Python with additional implementations in Julia, Fortran90 and C++.
 
 # Installation
 To load the the scripts as general modules, clone the repository and do a local pip install:
