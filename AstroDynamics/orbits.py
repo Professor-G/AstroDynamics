@@ -26,21 +26,15 @@ class orbit:
   Attributes:
       integration_time (float): The integration duration in seconds.
       energy (np.ndarray): Energy of the system, which should be conserved at all timesteps.
-      h (np.ndarray): Angular momentum of the system, which should be conserved at all timesteps.
+      energy_error (np.ndarray): Energy error of the system.
+      h (np.ndarray): Angular momentum of the system, as a function of time.
+      h_error (np.ndarray): Angular momentum error of the system, as a function of time.
       X_vec (np.ndarray): X-position of the star as a function of integrated time.
       Y_vec (np.ndarray): Y-position of the star as a function of integrated time.
       x_vec (np.ndarray): X-position of the planet as a function of integrated time.
       y_vec (np.ndarray): Y-position of the planet as a function of integrated time.
       path (str): Absolute path to the directory where the images should be saved.
 
-  Methods:
-      run() -> None: Calculates the orbital characteristics. This is run once when a class object is initialized, and must be called manually if the class parameters are updated.
-      euler_integrator() -> None: Integrates using the Euler method.
-      calc_energy(r, Vx, vx, Vy, vy) -> float: Calculates the energy of the two-body system at a given timestamp.
-      calc_momentum(r, Vx, Vy) -> float: Calculates the momentum of the two-body system at a given timestamp.
-      plot_orbit(savefig=False) -> None: Plots the orbital motion of both bodies.
-      plot_energy(savefig=False) -> None: Plots the energy evolution of the system, which should be conserved.
-      plot_momentum(savefig=False) -> None: Plots the angular momentum evolution of the system, which should be conserved.
   """
 
   def __init__(self, M, m, X, x, V, v, dt, tend, integrator):
@@ -95,11 +89,11 @@ class orbit:
     #Energy quantity and postion vectors to save values
     self.energy, self.h, self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[],[],[]
 
-    timesteps = np.arange(0, self.tend, self.dt)
+    self.timesteps = np.arange(0, self.tend, self.dt)
     progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(timesteps))
     start_time = time.time()
 
-    for t in timesteps:
+    for t in self.timesteps:
 
       #Earth's acceleration
       a = -self.M*(self.x-self.X)/np.linalg.norm(self.x-self.X)**3 
@@ -131,6 +125,9 @@ class orbit:
     progess_bar.finish()
     self.integration_time = end_time - start_time
     print(f'Time to execute: {np.round(self.integration_time, 4)} seconds.')
+
+    self.energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
+    self.h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
 
     return 
 
@@ -209,9 +206,7 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
-
-    plt.plot(np.arange(0, self.tend, self.dt), energy_error, 'blue', marker = '*')
+    plt.plot(self.timesteps, self.energy_error, 'blue', marker = '*')
     plt.ylabel(r'$\Delta \rm E / \rm E$')
     plt.xlabel('Time')
     plt.yscale('log')
@@ -235,10 +230,8 @@ class orbit:
     Returns:
         AxesImage: The resulting plot.
     """
-    
-    h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
 
-    plt.plot(np.arange(0, self.tend, self.dt), h_error, 'blue', marker = '*')
+    plt.plot(self.timesteps, self.h_error, 'blue', marker = '*')
     plt.ylabel(r'$\Delta \rm h / \rm h$')
     plt.xlabel('Time')
     plt.yscale('log')
