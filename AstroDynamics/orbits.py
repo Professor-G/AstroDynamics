@@ -96,7 +96,7 @@ class orbit:
     for t in self.timesteps:
 
       #Earth's acceleration
-      a = -self.M*(self.x-self.X)/np.linalg.norm(self.x-self.X)**3 
+      a = -self.M*(self.x-self.X)/np.linalg.norm(self.x-self.X)**3
       
       #Sun's acceleration
       A = -self.m*(self.X-self.x)/np.linalg.norm(self.X-self.x)**3 
