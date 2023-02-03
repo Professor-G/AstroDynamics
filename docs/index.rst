@@ -5,8 +5,7 @@
 
 Welcome to the documentation!
 ===============================
-This is an open-source program for 
-
+Numerical Methods for Astrodynamical Systems.
 
 Pages
 ==================
@@ -14,7 +13,6 @@ Pages
    :maxdepth: 1
 
    source/Orbital_Mechanics
-   source/Excercise_2
 
 Documentation
 ==================
@@ -23,4 +21,4 @@ Here is the documentation for all the modules:
 .. toctree::
    :maxdepth: 1
 
-   source/hydrodynamic_codes
+   source/astrodynamics
