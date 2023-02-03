@@ -10,9 +10,7 @@ class orbit:
   The methods are used to calculate the orbital elements of
   the system including the energy and angular momentum at each timestep.
 
-  Notes
-  -----
-  The inputs must be in code units!
+  Note that the inputs must be in code units!
 
   Parameters
   ----------
@@ -20,13 +18,13 @@ class orbit:
     Mass of the star.
   m : `float` 
     Mass of the planet.
-  X : `np.ndarray`
-  `Initial position vector of the star.
-  x : `np.ndarray`
+  X : `ndarray`
+    Initial position vector of the star.
+  x : `ndarray`
     Initial position vector of the planet.
-  V : `np.ndarray`
+  V : `ndarray`
     Initial velocity vector of the star.
-  v : `np.ndarray`
+  v : `ndarray`
     Initial velocity vector of the planet.
   dt : `float`
     Timestep to use for the integration.
@@ -37,36 +35,47 @@ class orbit:
 
   Attributes
   ----------
-  integration_time (float): The integration duration in seconds.
-  energy (np.ndarray): Energy of the system, which in principle should be
-    conserved at all timesteps.
-  h (np.ndarray): Angular momentum of the system, which in principle should be
-    conserved at all timesteps.
-  X_vec (np.ndarray): The x-position of the star as a function of the integrated time. 
-  Y_vec (np.ndarray): The y-position of the star as a function of the integrated time.
-  x_vec (np.ndarray): The x-position of the planet as a function of the integrated time. 
-  y_vec (np.ndarray): The y-position of the planet as a function of the integrated time. 
-  path (str): The absolute path to the directory where the images should be saved.
+  integration_time : `float` 
+    The integration duration in seconds.
+  energy : `ndarray` 
+    Energy of the system, which in principle should be conserved at all timesteps.
+  h : `ndarray` 
+    Angular momentum of the system, which in principle should be conserved at all timesteps.
+  X_vec : `ndarray`
+    The x-position of the star as a function of the integrated time. 
+  Y_vec : `ndarray`
+    The y-position of the star as a function of the integrated time.
+  x_vec : `ndarray` 
+    The x-position of the planet as a function of the integrated time. 
+  y_vec : `ndarray` 
+    The y-position of the planet as a function of the integrated time. 
+  path : `str`
+    The absolute path to the directory where the images should be saved.
 
   Methods
   -------
-  _run_(): Calculates the orbital characteristics, this is run
+  _run_ : ``
+    Calculates the orbital characteristics, this is run
     once when a class object is initialized, and must be called manually
     if the class parameters are updated. 
 
-  euler_integrator(): Integrates using the Euler method.
+  euler_integrator : ``
+    Integrates using the Euler method.
 
-  calc_energy(r, Vx, vx, Vy, vy): Calculates the energy of the two-body system at a given timestamp.
+  calc_energy : ``
+    Calculates the energy of the two-body system at a given timestamp.
 
-  calc_momentum(r, Vx, Vy): Calculates the momentum of the two-body system at a given timestamp.
+  calc_momentum : ``
+    Calculates the momentum of the two-body system at a given timestamp.
   
-  plot_orbit(savefig=False): Plots the orbital motion of both bodies.
+  plot_orbit : ``
+    Plots the orbital motion of both bodies.
 
-  plot_energy(savefig=False): Plots the energy evolution of the system as a 
-    function of integration time, which should in principle be conserved.
+  plot_energy : `` 
+    Plots the energy evolution of the system as a function of integration time, which should in principle be conserved.
 
-  plot_momentum(savefig=False): Plots the angular momentum evolution of the 
-    system as a function of integration time, which should in principle be conserved.
+  plot_momentum : ``
+    Plots the angular momentum evolution of the system as a function of integration time, which should in principle be conserved.
   """
 
   def __init__(self, M, m, X, x, V, v, dt, tend, integrator):
@@ -85,8 +94,7 @@ class orbit:
     self._run_()
 
   def _run_(self):
-    """
-    Calculate the orbital characteristics.
+    """Calculate the orbital characteristics.
 
     This method must be called directly if the class parameters
     are updated after initialization.
@@ -98,8 +106,7 @@ class orbit:
       self.euler_integrator()
 
   def euler_integrator(self):
-    """
-    Execute the Euler integration method and print
+    """Execute the Euler integration method and print
     out the time taken to complete. The time is saved
     and can be loaded using `integration_time` attribute.
     """
@@ -150,17 +157,21 @@ class orbit:
     return 
 
   def calc_energy(self, r, Vx, vx, Vy, vy):
-    """
-    Calculates the energy of the system using the velocity
+    """Calculates the energy of the system using the velocity
     and position vectors.
 
     Parameters
     ----------
-    r (float): The length of the vector connecting both bodies.
-    Vx (float): The x-component of the star's velocity vector.
-    vx (float): The x-component of the planet's velocity vector.
-    Vy (float): The y-component of the star's velocity vector.
-    vy (float): The y-component of the planet's velocity vector.
+    r : `float` 
+      The length of the vector connecting both bodies.
+    Vx : `float`  
+      The x-component of the star's velocity vector.
+    vx : `float`  
+      The x-component of the planet's velocity vector.
+    Vy : `float`  
+      The y-component of the star's velocity vector.
+    vy : `float`  
+      The y-component of the planet's velocity vector.
 
     Returns
     -------
@@ -173,15 +184,17 @@ class orbit:
     return energy
 
   def calc_momentum(self, r, Vx, Vy):
-    """
-    Calculates the angular momentum given a set of 
+    """Calculates the angular momentum given a set of 
     velocity vectors and the separation distance.
 
     Parameters
     ----------
-    r (float): The length of the vector connecting both bodies.
-    Vx (float): The x-component of the star's velocity vector.
-    Vy (float): The y-component of the star's velocity vector.
+    r : `float` 
+      The length of the vector connecting both bodies.
+    Vx : `float` 
+      The x-component of the star's velocity vector.
+    Vy : `float` 
+      The y-component of the star's velocity vector.
 
     Returns
     -------
@@ -196,14 +209,14 @@ class orbit:
     return h 
 
   def plot_orbit(self, savefig=False):
-    """
-    Plots the XY position of the star and the planet's orbit.
+    """Plots the XY position of the star and the planet's orbit.
     
     Parameters
     ----------
-    savefig (bool): If True the image will be saved to the
-      home directory, unless a path attribute is set. Defaults
-      to False which will instead output the figure.
+    savefig : `bool` 
+      If True the image will be saved to the home directory, 
+      unless a path attribute is set. Defaults to False which 
+      will instead output the figure.
 
     Returns
     -------
@@ -226,13 +239,13 @@ class orbit:
     return 
 
   def plot_energy(self, savefig=False):
-    """
-    Plots the energy of the system as a function of the
+    """Plots the energy of the system as a function of the
     integration timesteps.
 
     Parameters
     ----------
-    savefig (bool): If True the image will be saved to the
+    savefig : `bool` 
+      If True the image will be saved to the
       home directory, unless a path attribute is set. Defaults
       to False which will instead output the figure.
 
@@ -258,13 +271,13 @@ class orbit:
     return 
 
   def plot_momentum(self, savefig=False):
-    """
-    Plots the energy of the system as a function of the
+    """Plots the energy of the system as a function of the
     integration timesteps.
     
     Parameters
     ----------
-    savefig (bool): If True the image will be saved to the
+    savefig : `bool` 
+      If True the image will be saved to the
       home directory, unless a path attribute is set. Defaults
       to False which will instead output the figure.
 
