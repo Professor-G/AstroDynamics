@@ -74,11 +74,12 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
     :class: with-shadow with-border
     :width: 1600px
 
-**We can change the integration parameters and re-configure the model:**
+**We can change the integration parameters as need-be and re-configure the model:**
 
 .. code-block:: python
 
     orbit.tend = 1e4
+    orbit.m = 1e-3
     orbit._run_()
 
     orbit.path='/Users/daniel/Desktop/'
