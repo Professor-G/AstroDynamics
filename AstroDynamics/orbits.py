@@ -115,13 +115,11 @@ class orbit:
       self.x_vec.append(self.x[0]), self.y_vec.append(self.x[1])
       self.X_vec.append(self.X[0]), self.Y_vec.append(self.X[1])
 
-      r = np.sqrt((self.x[0] - self.X[0])**2 + (self.x[1] - self.X[1])**2)
-      
       #Energy calculation
-      energy = self.calc_energy(r=r, Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+      energy = self.calc_energy(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
       
       #Momentum calculation
-      h = self.calc_momentum(r=r, vx=self.v[0], vy=self.v[1])
+      h = self.calc_momentum(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
 
       #Center of mass calculation
       com = self.calc_com()
@@ -163,11 +161,10 @@ class orbit:
 
     return a, A 
 
-  def calc_energy(self, r, Vx, vx, Vy, vy):
+  def calc_energy(self, Vx, vx, Vy, vy):
     """Calculates the energy of the two-body system, assuming z-components are zero!
 
     Args:
-        r (float): The length of the vector connecting both bodies.
         Vx (float): The x-component of the star's velocity vector.
         vx (float): The x-component of the planet's velocity vector.
         Vy (float): The y-component of the star's velocity vector.
@@ -176,6 +173,9 @@ class orbit:
     Returns:
         float: The energy of the two-body system at the input positions. 
     """
+    
+    #The length of the vector connecting both bodies.
+    r = np.sqrt((self.x[0] - self.X[0])**2 + (self.x[1] - self.X[1])**2)
 
     Vtot, vtot = np.sqrt(Vx**2 + Vy**2), np.sqrt(vx**2 + vy**2)
     energy = self.m*(vtot**2)/2.0 + self.M*(Vtot**2)/2.0 - self.m*self.M/r
@@ -223,11 +223,10 @@ class orbit:
     
     return np.sqrt(np.dot(vel, vel))
 
-  def calc_momentum(self, r, vx, vy):
+  def calc_momentum(self, Vx, vx, Vy, vy):
     """Calculates the angular momentum of the system.
 
     Args:
-        r (float): The length of the vector connecting both bodies.
         vx (float): The x-component of the planet's velocity vector.
         vy (float): The y-component of the planet's velocity vector.
 
@@ -235,10 +234,17 @@ class orbit:
         float: The angular momentum at the specified timestamp.
     """
 
-    phi = np.arctan((self.x[1] - self.X[1]) / self.x[0] - self.X[0])
-    V_phi = -vx*np.sin(phi) + vy*np.cos(phi)
-    phi_r = V_phi / r 
-    h = r**2 * phi_r 
+    x, y = self.x[0] - self.X[0], self.x[1] - self.X[1]
+    v_x, v_y = vx - Vx, vy - Vy
+
+    r = np.sqrt(x**2 + y**2)
+    phi = np.arctan2(y, x)
+
+    vrad =  v_x*np.cos(phi) + v_y*np.sin(phi)
+    vphi = -v_x*np.sin(phi) + v_y*np.cos(phi)
+
+    phidot = vphi / r
+    h = r**2 * phidot 
 
     return h 
 
