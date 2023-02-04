@@ -199,7 +199,7 @@ class orbit:
     z = (self.M * self.X[2] + self.m * self.x[2]) / tot_mass
 
     r = np.array([x,y,z])
-
+we subtract the CoM position vector from each of the objects’ position vectors to effectively set the CoM to the origin
     return np.sqrt(np.dot(r, r))  
 
   def calc_vcom(self, Vx, vx, Vy, vy):
@@ -366,8 +366,7 @@ class orbit:
     return 
 
 def _set_style_():
-  """Function to configure the matplotlib.pyplot style.
-  This function is called before any images are saved.
+  """Function to configure the matplotlib.pyplot style. This function is called before any images are saved.
   """
   plt.rcParams["xtick.color"] = "323034"
   plt.rcParams["ytick.color"] = "323034"
