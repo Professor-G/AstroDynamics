@@ -121,7 +121,7 @@ class orbit:
       energy = self.calc_energy(r=r, Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
       
       #Momentum calculation
-      h = self.calc_momentum(r=r, Vx=self.V[0], Vy=self.V[1])
+      h = self.calc_momentum(r=r, vx=self.v[0], vy=self.v[1])
 
       #Center of mass calculation
       com = self.calc_com()
@@ -223,20 +223,20 @@ class orbit:
     
     return np.sqrt(np.dot(vel, vel))
 
-  def calc_momentum(self, r, Vx, Vy):
+  def calc_momentum(self, r, vx, vy):
     """Calculates the angular momentum of the system.
 
     Args:
         r (float): The length of the vector connecting both bodies.
-        Vx (float): The x-component of the star's velocity vector.
-        Vy (float): The y-component of the star's velocity vector.
+        vx (float): The x-component of the planet's velocity vector.
+        vy (float): The y-component of the planet's velocity vector.
 
     Returns:
         float: The angular momentum at the specified timestamp.
     """
 
     phi = np.arctan((self.x[1] - self.X[1]) / self.x[0] - self.X[0])
-    V_phi = -Vx*np.sin(phi) + Vy*np.cos(phi)
+    V_phi = -vx*np.sin(phi) + vy*np.cos(phi)
     phi_r = V_phi / r 
     h = r**2 * phi_r 
 
