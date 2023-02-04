@@ -91,12 +91,11 @@ class orbit:
 
     #To ensure the initial conditions are reset
     self.X, self.x, self.V, self.v = np.transpose(self.init_params)
-
     #Postion vectors to save values
     self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[]
 
-    self.energy, self.h, self.com_pos, self.com_vel = [],[],[],[]
-    
+    self.energy, self.h, com_x, com_y, com_vx, com_vy = [],[],[],[],[],[]
+
     self.timesteps = np.arange(0, self.tend, self.dt)
     progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(self.timesteps))
     start_time = time.time()
@@ -122,12 +121,14 @@ class orbit:
       h = self.calc_momentum(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
 
       #Center of mass calculation
-      com = self.calc_com()
+      comx, comy = self.calc_com()
 
       #Velocity of center of mass calculation
-      com_vel = self.calc_vcom(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+      comvx, comvy = self.calc_comv(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
 
-      self.energy.append(energy), self.h.append(h), self.com_pos.append(com), self.com_vel.append(com_vel)
+      com_x.append(comx), com_y.append(comy), com_vx.append(comvx), com_vy.append(comvy)
+      self.energy.append(energy), self.h.append(h)
+
       progess_bar.next()
 
     end_time = time.time()
@@ -137,6 +138,7 @@ class orbit:
 
     self.energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
     self.h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
+    self.com, self.comv = np.c_[com_x, com_y], np.c_[com_vx, com_vy]
 
     return 
 
@@ -183,7 +185,7 @@ class orbit:
     return energy
 
   def calc_com(self):
-    """Calculates the norm of the center of mass vector at a given timestep.
+    """Calculates the position vector of the center of mass vector at a given timestep.
     
     Args:
         None
@@ -196,14 +198,14 @@ class orbit:
 
     x = (self.M * self.X[0] + self.m * self.x[0]) / tot_mass
     y = (self.M * self.X[1] + self.m * self.x[1]) / tot_mass
-    z = (self.M * self.X[2] + self.m * self.x[2]) / tot_mass
+    #z = (self.M * self.X[2] + self.m * self.x[2]) / tot_mass
 
-    r = np.array([x,y,z])
+    r = np.array([x,y])
 
-    return np.sqrt(np.dot(r, r))  
+    return r[0], r[1]
 
-  def calc_vcom(self, Vx, vx, Vy, vy):
-    """Calculates the velocity of the center of mass of the two objects.
+  def calc_comv(self, Vx, vx, Vy, vy):
+    """Calculates the velocity vector of the center of mass of the two objects.
 
     Args:
         Vx (float): The x-component of the star's velocity vector.
@@ -220,8 +222,8 @@ class orbit:
 
     #p=mv
     vel = total_momentum / (self.M + self.m)  
-    
-    return np.sqrt(np.dot(vel, vel))
+     
+    return vel[0], vel[1]
 
   def calc_momentum(self, Vx, vx, Vy, vy):
     """Calculates the angular momentum of the system.
@@ -259,9 +261,10 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.timesteps, self.com_pos, 'blue', marker = '*')
-    plt.ylabel('C.O.M. Position'), plt.xlabel('Time')
-    plt.yscale('log')
+    plt.plot(self.com[:,0], self.com[:,1], 'blue', marker = '*')
+    plt.ylabel('Y'), plt.xlabel('X')
+   # plt.xscale('log')
+    plt.title('Center of Mass')
     if savefig is False:
       plt.show()
     else:
@@ -283,9 +286,10 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.timesteps, self.com_vel, 'blue', marker = '*')
-    plt.ylabel('C.O.M. Velocity'), plt.xlabel('Time')
-    plt.yscale('log')
+    plt.plot(self.comv[:,0], self.comv[:,1], 'blue', marker = '*')
+    plt.ylabel(r'$V_y$'), plt.xlabel(r'$V_x$')
+    plt.yscale('log'), plt.xscale('log')
+    plt.title('Center of Mass')
     if savefig is False:
       plt.show()
     else:
@@ -309,8 +313,9 @@ class orbit:
 
     plt.plot(self.x_vec, self.y_vec, 'blue', label = 'Earth')
     plt.plot(self.X_vec, self.Y_vec, 'orange', label = "Sun")
-    plt.xlabel("X Position"), plt.ylabel("Y Position")
+    plt.xlabel("X"), plt.ylabel("Y")
     plt.legend()
+    plt.title('Orbits')
     if savefig is False:
       plt.show()
     else:
@@ -333,9 +338,9 @@ class orbit:
     """
 
     plt.plot(self.timesteps, self.energy_error, 'blue', marker = '*')
-    plt.ylabel(r'$\Delta \rm E / \rm E$')
-    plt.xlabel('Time')
+    plt.xlabel(r'$\rm Time \ (\Omega = 1)$'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
     plt.yscale('log')
+    plt.title('Error Growth')
     if savefig is False:
       plt.show()
     else:
@@ -358,8 +363,8 @@ class orbit:
     """
 
     plt.plot(self.timesteps, self.h_error, 'blue', marker = '*')
-    plt.ylabel(r'$\Delta \rm h / \rm h$')
-    plt.xlabel('Time')
+    plt.ylabel(r'|$\Delta \rm h / \rm h_0$|')
+    plt.xlabel(r'$\rm Time \ (\Omega = 1)$')
     plt.yscale('log')
     if savefig is False:
       plt.show()
