@@ -210,6 +210,10 @@ The class instance contains the ``approx`` attribute which determines whether th
 
 **(7)** How would you modify your code to eliminate the evolution of the center of mass?
 
+**To eliminate the evolution of the center of mass and constrain it to the origin of the system's frame,**
+**the center of mass' position vector should be subtracted from both the Earth and Sun's position vectors**
+**shifting the system toward the Sun.**
+
 
 
 
