@@ -101,7 +101,7 @@ Excercises
     orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
     orbit.plot_orbit()
 
-.. figure:: _static/orbit_plot_1.png
+.. figure:: _static/energy_plot_1.png
     :align: center
     :class: with-shadow with-border
     :width: 1600px
@@ -211,9 +211,7 @@ The class instance contains the ``approx`` attribute which determines whether th
 
 **(7)** How would you modify your code to eliminate the evolution of the center of mass?
 
-**To eliminate the evolution of the center of mass and constrain it to the origin of the system's frame,**
-**the center of mass' position vector should be subtracted from both the Earth and Sun's position vectors**
-**shifting the system toward the Sun.**
+To eliminate the evolution of the center of mass and constrain it to the origin of the system's frame, the center of mass' position vector should be subtracted from both the Earth and Sun's position vectors shifting the system toward the Sun.
 
 
 
