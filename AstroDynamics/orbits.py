@@ -199,7 +199,7 @@ class orbit:
     z = (self.M * self.X[2] + self.m * self.x[2]) / tot_mass
 
     r = np.array([x,y,z])
-we subtract the CoM position vector from each of the objects’ position vectors to effectively set the CoM to the origin
+
     return np.sqrt(np.dot(r, r))  
 
   def calc_vcom(self, Vx, vx, Vy, vy):
