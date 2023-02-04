@@ -119,8 +119,7 @@ Excercises
 
 **(3)** Compare the energy error vs time for the run above, with runs using :math:`\Delta` t = 1e-4, and :math:`\Delta` t = 1e-2. Explain the trend.
 
-The smaller the timestep, the lower the error!  This is because the Euler integrator assumes a constant velocity over each timestep.  Since velocities aren't constant
-over the timestep, the smaller timestep results in less error.
+The smaller the timestep, the lower the error!  This is because the Euler integrator assumes a constant velocity over each timestep.  Since velocities aren't constant over the timestep, the smaller timestep results in less error.
 
 .. code-block:: python
     
