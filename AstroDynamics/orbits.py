@@ -94,7 +94,7 @@ class orbit:
     #Postion vectors to save values
     self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[]
 
-    self.energy, self.h, com_x, com_y, com_vx, com_vy = [],[],[],[],[],[]
+    self.energy, self.h, com_x, com_vx = [],[],[],[]
 
     self.timesteps = np.arange(0, self.tend, self.dt)
     progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(self.timesteps))
@@ -121,13 +121,12 @@ class orbit:
       h = self.calc_momentum(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
 
       #Center of mass calculation
-      comx, comy = self.calc_com()
+      comx = self.calc_com()
 
       #Velocity of center of mass calculation
-      comvx, comvy = self.calc_comv(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+      comvx = self.calc_comv(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
 
-      com_x.append(comx), com_y.append(comy), com_vx.append(comvx), com_vy.append(comvy)
-      self.energy.append(energy), self.h.append(h)
+      com_x.append(comx), com_vx.append(comvx), self.energy.append(energy), self.h.append(h)
 
       progess_bar.next()
 
@@ -138,7 +137,7 @@ class orbit:
 
     self.energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
     self.h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
-    self.com, self.comv = np.c_[com_x, com_y], np.c_[com_vx, com_vy]
+    self.com, self.comv = com_x, com_vx
 
     return 
 
@@ -194,15 +193,14 @@ class orbit:
         float: The length of the center of mass position vector.
     """
 
-    tot_mass = (self.M + self.m)
+    tot_mass = self.M + self.m
 
-    x = (self.M * self.X[0] + self.m * self.x[0]) / tot_mass
-    y = (self.M * self.X[1] + self.m * self.x[1]) / tot_mass
-    #z = (self.M * self.X[2] + self.m * self.x[2]) / tot_mass
+    rp = np.sqrt(self.x[0]**2 + self.x[1]**2)
+    rs = np.sqrt(self.X[0]**2 + self.X[1]**2)
 
-    r = np.array([x,y])
+    r = (self.M * rs + self.m * rp) / tot_mass
 
-    return r[0], r[1]
+    return r
 
   def calc_comv(self, Vx, vx, Vy, vy):
     """Calculates the velocity vector of the center of mass of the two objects.
@@ -217,13 +215,14 @@ class orbit:
         float: The velocity of the center of mass.
     """
 
-    V, v = np.array([Vx, Vy]), np.array([vx, vy])
-    total_momentum = self.M * V + self.m * v
+    tot_mass = self.M + self.m
 
-    #p=mv
-    vel = total_momentum / (self.M + self.m)  
-     
-    return vel[0], vel[1]
+    vp = np.sqrt(vx**2 + vy**2)
+    vs = np.sqrt(Vx**2 + Vy**2)
+
+    v = (self.M * vs + self.m * vp) / tot_mass
+         
+    return v
 
   def calc_momentum(self, Vx, vx, Vy, vy):
     """Calculates the angular momentum of the system.
@@ -261,9 +260,8 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.com[:,0], self.com[:,1], 'blue', marker = '*')
-    plt.ylabel('Y'), plt.xlabel('X')
-   # plt.xscale('log')
+    plt.plot(self.timesteps, self.com, 'blue', marker = '*')
+    plt.xlabel('Time'), plt.ylabel(r'$r_{COM}$')
     plt.title('Center of Mass')
     if savefig is False:
       plt.show()
@@ -286,9 +284,9 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.comv[:,0], self.comv[:,1], 'blue', marker = '*')
-    plt.ylabel(r'$V_y$'), plt.xlabel(r'$V_x$')
-    plt.yscale('log'), plt.xscale('log')
+    plt.plot(self.timesteps, self.comv, 'blue', marker = '*')
+    plt.xlabel('Time'), plt.ylabel(r'$V_{COM}$')
+    plt.yscale('log')
     plt.title('Center of Mass')
     if savefig is False:
       plt.show()
@@ -338,7 +336,7 @@ class orbit:
     """
 
     plt.plot(self.timesteps, self.energy_error, 'blue', marker = '*')
-    plt.xlabel(r'$\rm Time \ (\Omega = 1)$'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
     plt.yscale('log')
     plt.title('Error Growth')
     if savefig is False:
