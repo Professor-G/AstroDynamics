@@ -76,6 +76,8 @@ class orbit:
 
     if self.integrator == 'euler':
       self.euler_integrator()
+    elif self.integrator == 'runge-kutta':
+      self.runge_kutta_integrator()
 
   def euler_integrator(self):
     """Executes the Euler integration method and calculates time taken to complete.
@@ -97,13 +99,13 @@ class orbit:
     self.energy, self.h, com_x, com_vx = [],[],[],[]
 
     self.timesteps = np.arange(0, self.tend, self.dt)
-    progess_bar = bar.FillingSquaresBar('Running integrator...', max=len(self.timesteps))
+    progess_bar = bar.FillingSquaresBar('Running Euler Integrator...', max=len(self.timesteps))
     start_time = time.time()
 
     for t in self.timesteps:
 
       #Calculate the acceleration
-      a, A = self.calc_acceleration()
+      a, A = self.calc_acceleration(x=self.x, X=self.X)
 
       #Update positions and velocities at each timestamp
       self.x = self.x + self.v*self.dt
@@ -141,7 +143,96 @@ class orbit:
 
     return 
 
-  def calc_acceleration(self):
+  def runge_kutta_integrator(self):
+    """Executes the Runge-Kutta integration method and calculates time taken to complete.
+    
+    Args:  
+        None
+
+    Returns:
+        None
+
+    Saves time taken to complete in `self.integration_time`.
+    """
+
+    #To ensure the initial conditions are reset
+    self.X, self.x, self.V, self.v = np.transpose(self.init_params)
+    # Postion vectors to save values
+    self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[]
+
+    self.energy, self.h, com_x, com_vx = [],[],[],[]
+
+    self.timesteps = np.arange(0, self.tend, self.dt)
+    progess_bar = bar.FillingSquaresBar('Running Runge-Kutta Integrator...', max=len(self.timesteps))
+    start_time = time.time()
+
+    for t in self.timesteps:
+      
+      a, A = self.calc_acceleration(x=self.x, X=self.X)
+
+      # Intermediate velocities and positions using k1 values
+      v1 = self.v + a*self.dt/2
+      x1 = self.x + self.v*self.dt/2
+      V1 = self.V + A*self.dt/2
+      X1 = self.X + self.V*self.dt/2
+
+      # Recalculate acceleration using intermediate positions and velocities
+      a1, A1 = self.calc_acceleration(x=x1, X=X1)
+
+      # Intermediate velocities and positions using k2 values
+      v2 = self.v + a1*self.dt/2
+      x2 = self.x + v1*self.dt/2
+      V2 = self.V + A1*self.dt/2
+      X2 = self.X + V1*self.dt/2
+
+      # Recalculate acceleration using intermediate positions and velocities
+      a2, A2 = self.calc_acceleration(x=x2, X=X2)
+
+      # Intermediate velocities and positions using k3 values
+      v3 = self.v + a2*self.dt
+      x3 = self.x + v2*self.dt
+      V3 = self.V + A2*self.dt
+      X3 = self.X + V2*self.dt
+
+      # Recalculate acceleration using intermediate positions and velocities
+      a3, A3 = self.calc_acceleration(x=x3, X=X3)
+
+      self.x = self.x + (self.v + 2*v1 + 2*v2 + v3)*self.dt / 6.
+      self.X = self.X + (self.V + 2*V1 + 2*V2 + V3)*self.dt / 6.
+      self.v = self.v + (a + 2*a1 + 2*a2 + a3)*self.dt / 6.
+      self.V = self.V + (A + 2*A1 + 2*A2 + A3)*self.dt / 6.
+      
+      self.x_vec.append(self.x[0]), self.y_vec.append(self.x[1])
+      self.X_vec.append(self.X[0]), self.Y_vec.append(self.X[1])
+
+      # Energy calculation
+      energy = self.calc_energy(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+      
+      # Momentum calculation
+      h = self.calc_momentum(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+
+      # Center of mass calculation
+      comx = self.calc_com()
+
+      #Velocity of center of mass calculation
+      comvx = self.calc_comv(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+
+      com_x.append(comx), com_vx.append(comvx), self.energy.append(energy), self.h.append(h)
+
+      progess_bar.next()
+
+    end_time = time.time()
+    progess_bar.finish()
+    self.integration_time = end_time - start_time
+    print(f'Time to execute: {np.round(self.integration_time, 4)} seconds.')
+
+    self.energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
+    self.h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
+    self.com, self.comv = com_x, com_vx
+
+    return 
+
+  def calc_acceleration(self, x, X):
     """Calculates the acceleration of both bodies at a given position.
 
     Args:
@@ -152,11 +243,11 @@ class orbit:
     """
     if self.approx:     
         #Earth and Sun acceleration
-        a = -self.M*(self.x-self.X)/np.sqrt(np.sum(np.square(self.x - self.X)))#np.linalg.norm(self.x-self.X)**3
-        A = -self.m*(self.X-self.x)/np.sqrt(np.sum(np.square(self.X - self.x)))#np.linalg.norm(self.X-self.x)**3 
+        a = -self.M*(x-X)/np.sqrt(np.sum(np.square(x-X)))#np.linalg.norm(self.x-self.X)**3
+        A = -self.m*(X-x)/np.sqrt(np.sum(np.square(X-x)))#np.linalg.norm(self.X-self.x)**3 
     else: #Need to calculate the unit vectors
-        r1, r2 = np.sqrt(np.sum(np.square(self.x - self.X))), np.sqrt(np.sum(np.square(self.X - self.x)))
-        u1, u2 = (self.x - self.X) / r1, (self.X - self.x) / r2
+        r1, r2 = np.sqrt(np.sum(np.square(x-X))), np.sqrt(np.sum(np.square(X-x)))
+        u1, u2 = (x-X) / r1, (X-x) / r2
         a = -self.M * u1 / (r1**2)
         A = -self.m * u2 / (r2**2)
 
