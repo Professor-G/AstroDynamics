@@ -42,32 +42,17 @@ The ``plot_orbit`` method plots the position of the star and the planet in the x
 
     orbit.plot_orbit()
 
-.. figure:: _static/orbit_plot_1.png
-    :align: center
-    :class: with-shadow with-border
-    :width: 1600px
-
 The ``calc_energy`` method calculates the energy of the system given the velocity and position vectors of the two celestial bodies. It calculates the magnitude of the velocity vectors, adds up the kinetic energy of both bodies, and subtracts the potential energy of the two bodies due to their mutual gravitational attraction. The method then saves the ``energy`` attribute which contains an array containing the energy of the system as a function of the integrated time. The ``plot_energy`` method can be used to plot the relative energy error of the system as a function of the time steps. 
 
 .. code-block:: python
 
     orbit.plot_energy()
 
-.. figure:: _static/energy_plot_1.png
-    :align: center
-    :class: with-shadow with-border
-    :width: 1600px
-
 The ``calc_momentum`` method calculates the angular momentum of the system given the velocity vectors and the separation distance between the two bodies. It uses the x and y components of the velocity vectors of the star, calculates the velocity of the planet relative to the star, and then calculates the :math:`\phi` angle and angular velocity, after which the angular momentum is finally computed by multiplying the square of the separation distance and the angular velocity. The ``plot_momentum`` method plots the relative error in the angular momentum of the system as a function of the integration time steps.
 
 .. code-block:: python
 
     orbit.plot_momentum()
-
-.. figure:: _static/momentum_plot_1.png
-    :align: center
-    :class: with-shadow with-border
-    :width: 1600px
 
 **We can change the integration parameters as need-be and re-configure the model:**
 
@@ -99,7 +84,7 @@ Excercises
     tend = 100.
     
     orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
-    orbit.plot_orbit()
+    orbit.plot_energy()
 
 .. figure:: _static/energy_plot_1.png
     :align: center
