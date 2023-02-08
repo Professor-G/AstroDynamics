@@ -198,6 +198,63 @@ The class instance contains the ``approx`` attribute which determines whether th
 To eliminate the evolution of the center of mass and constrain it to the origin of the system's frame, the center of mass' position vector should be subtracted from both the Earth and Sun's position vectors shifting the system toward the Sun.
 
 
+Euler vs Runge-Kutta
+------------------
 
+** Plot the energy error up to 10 orbits for the Euler and RK4 integrators. **
 
+The integrator parameter can be set to either 'euler' or 'runge-kutta':
 
+.. code-block:: python
+    from AstroDynamics import orbits  
+    import numpy as np 
+
+    #capital letters = SUN, lower case = EARTH
+    M, m = 1.0, 3.0e-6
+    X = np.array([0., 0., 0.])
+    V = np.array([0., 0., 0.])
+    x = np.array([1., 0., 0.])
+    v = np.array([0., 1., 0.])
+
+    dt, tend = 1e-3, 10
+
+    euler = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
+    rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='runge-kutta')
+
+The plot can be visualized as follows:
+
+.. code-block:: python
+
+    plt.plot(euler.timesteps, euler.energy_error, 'blue', marker = '*', label='Euler')
+    plt.plot(rk4.timesteps, rk4.energy_error, 'red', marker = 's', label='Runge-Kutta')
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/euler_vs_rk4.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+
+** Plot the RK4 error in time, for different timesteps (10-1 to 10-4) **
+
+.. code-block:: python
+
+    for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
+        rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='runge-kutta')
+        plt.plot(rk4.timesteps, rk4.energy_error, label=r'$\Delta t$='+str(timestep))
+
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/rk4_timestep.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+    
+We can see that the error decreases with :math:`\Delta t^4`.
