@@ -168,32 +168,33 @@ class orbit:
 
     for t in self.timesteps:
       
+      #Calculate the acceleration
       a, A = self.calc_acceleration(x=self.x, X=self.X)
 
       # Intermediate velocities and positions using k1 values
-      v1 = self.v + a*self.dt/2
       x1 = self.x + self.v*self.dt/2
-      V1 = self.V + A*self.dt/2
       X1 = self.X + self.V*self.dt/2
-
+      V1 = self.V + A*self.dt/2
+      v1 = self.v + a*self.dt/2
+      
       # Recalculate acceleration using intermediate positions and velocities
       a1, A1 = self.calc_acceleration(x=x1, X=X1)
 
       # Intermediate velocities and positions using k2 values
-      v2 = self.v + a1*self.dt/2
       x2 = self.x + v1*self.dt/2
-      V2 = self.V + A1*self.dt/2
       X2 = self.X + V1*self.dt/2
-
+      v2 = self.v + a1*self.dt/2
+      V2 = self.V + A1*self.dt/2
+      
       # Recalculate acceleration using intermediate positions and velocities
       a2, A2 = self.calc_acceleration(x=x2, X=X2)
 
       # Intermediate velocities and positions using k3 values
-      v3 = self.v + a2*self.dt
       x3 = self.x + v2*self.dt
-      V3 = self.V + A2*self.dt
       X3 = self.X + V2*self.dt
-
+      v3 = self.v + a2*self.dt
+      V3 = self.V + A2*self.dt
+    
       # Recalculate acceleration using intermediate positions and velocities
       a3, A3 = self.calc_acceleration(x=x3, X=X3)
 
