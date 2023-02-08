@@ -201,11 +201,12 @@ To eliminate the evolution of the center of mass and constrain it to the origin 
 Euler vs Runge-Kutta
 ------------------
 
-** Plot the energy error up to 10 orbits for the Euler and RK4 integrators. **
+** Plot the energy error up to 10 orbits for the Euler and RK4 integrators, using a timestep of 1e-2. **
 
-The integrator parameter can be set to either 'euler' or 'runge-kutta':
+The integrator parameter can be set to either 'euler' or 'runge-kutta'.
 
 .. code-block:: python
+
     from AstroDynamics import orbits  
     import numpy as np 
 
@@ -216,7 +217,7 @@ The integrator parameter can be set to either 'euler' or 'runge-kutta':
     x = np.array([1., 0., 0.])
     v = np.array([0., 1., 0.])
 
-    dt, tend = 1e-3, 10
+    dt, tend = 1e-2, 10
 
     euler = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
     rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='runge-kutta')
