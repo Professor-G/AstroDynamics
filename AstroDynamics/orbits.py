@@ -78,6 +78,8 @@ class orbit:
       self.euler_integrator()
     elif self.integrator == 'runge-kutta':
       self.runge_kutta_integrator()
+    elif self.integrator == 'leapfrog':
+        self.leapfrog_integrator()
 
   def euler_integrator(self):
     """Executes the Euler integration method and calculates time taken to complete.
@@ -233,6 +235,76 @@ class orbit:
 
     return 
 
+  def leapfrog_integrator(self):
+    """Executes the leapfrog integration method, also called the Störmer method or the Verlet method.
+    
+    Args:  
+        None
+
+    Returns:
+        None
+
+    Saves time taken to complete in `self.integration_time`.
+    """
+
+    #To ensure the initial conditions are reset
+    self.X, self.x, self.V, self.v = np.transpose(self.init_params)
+    #Postion vectors to save values
+    self.X_vec, self.x_vec, self.Y_vec, self.y_vec = [],[],[],[]
+
+    self.energy, self.h, com_x, com_vx = [],[],[],[]
+
+    self.timesteps = np.arange(0, self.tend, self.dt)
+    progess_bar = bar.FillingSquaresBar('Running Leapfrog Integrator...', max=len(self.timesteps))
+    start_time = time.time()
+
+    for t in self.timesteps:
+
+      #Calculate the acceleration
+      a, A = self.calc_acceleration(x=self.x, X=self.X)
+
+      #Update positions and velocities at each timestamp
+      kick = self.v + a*self.dt/2.0
+      KICK = self.V + A*self.dt/2.0
+
+      self.x = self.x + kick*self.dt
+      self.X = self.X + KICK*self.dt  
+
+      a, A = self.calc_acceleration(x=self.x, X=self.X)
+
+      self.v = kick + a*self.dt/2.0
+      self.V = KICK + A*self.dt/2.0
+
+      self.x_vec.append(self.x[0]), self.y_vec.append(self.x[1])
+      self.X_vec.append(self.X[0]), self.Y_vec.append(self.X[1])
+
+      #Energy calculation
+      energy = self.calc_energy(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+      
+      #Momentum calculation
+      h = self.calc_momentum(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+
+      #Center of mass calculation
+      comx = self.calc_com()
+
+      #Velocity of center of mass calculation
+      comvx = self.calc_comv(Vx=self.V[0], vx=self.v[0], Vy=self.V[1], vy=self.v[1])
+
+      com_x.append(comx), com_vx.append(comvx), self.energy.append(energy), self.h.append(h)
+
+      progess_bar.next()
+
+    end_time = time.time()
+    progess_bar.finish()
+    self.integration_time = end_time - start_time
+    print(f'Time to execute: {np.round(self.integration_time, 4)} seconds.')
+
+    self.energy_error = np.abs((np.array(self.energy)-self.energy[0])/self.energy[0])
+    self.h_error = np.abs((np.array(self.h)-self.h[0])/self.h[0])
+    self.com, self.comv = com_x, com_vx
+
+    return 
+
   def calc_acceleration(self, x, X):
     """Calculates the acceleration of both bodies at a given position.
 
@@ -352,7 +424,7 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.timesteps, self.com, 'blue', marker = '*')
+    plt.plot(self.timesteps, self.com, 'blue')#, marker = '*')
     plt.xlabel('Time'), plt.ylabel(r'$r_{COM}$')
     plt.title('Center of Mass')
     if savefig is False:
@@ -376,7 +448,7 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.timesteps, self.comv, 'blue', marker = '*')
+    plt.plot(self.timesteps, self.comv, 'blue')#, marker = '*')
     plt.xlabel('Time'), plt.ylabel(r'$V_{COM}$')
     plt.yscale('log')
     plt.title('Center of Mass')
@@ -427,7 +499,7 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.timesteps, self.energy_error, 'blue', marker = '*')
+    plt.plot(self.timesteps, self.energy_error, 'blue')#, marker = '*')
     plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
     plt.yscale('log')
     plt.title('Error Growth')
@@ -452,7 +524,7 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.timesteps, self.h_error, 'blue', marker = '*')
+    plt.plot(self.timesteps, self.h_error, 'blue')#, marker = '*')
     plt.ylabel(r'|$\Delta \rm h / \rm h_0$|')
     plt.xlabel(r'$\rm Time \ (\Omega = 1)$')
     plt.yscale('log')
