@@ -1,81 +1,44 @@
-#include <cmath>
 #include <iostream>
 #include <vector>
-#include <ctime>
 #include <utility>
+#include <cmath>
 
-//////////////////////
-//Helper functions
-//////////////////////
-
-//Function to calculate the acceleration of both bodies
-std::pair<double, double> calc_acceleration(const std::vector<double> &X, const std::vector<double> &x, double M, double m) {
-  double a = -M * (x[0] - X[0]) / pow(pow(x[0] - X[0], 2) + pow(x[1] - X[1], 2), 3.0 / 2.0);
-  double A = -m * (X[0] - x[0]) / pow(pow(x[0] - X[0], 2) + pow(x[1] - X[1], 2), 3.0 / 2.0);
-
-  return std::make_pair(a, A);
+std::pair<double, double> calc_acceleration(std::vector<double> X, std::vector<double> x, double M, double m) {
+    double r = std::sqrt((X[0] - x[0]) * (X[0] - x[0]) + (X[1] - x[1]) * (X[1] - x[1]));
+    double a = M * (X[0] - x[0]) / (r * r * r) + m * (x[0] - X[0]) / (r * r * r);
+    double A = M * (X[1] - x[1]) / (r * r * r) + m * (x[1] - X[1]) / (r * r * r);
+    return std::make_pair(a, A);
 }
 
-//Function to calculate the energy of the system, should be conserved
-double calc_energy(const std::vector<double> &X, const std::vector<double> &x, double Vx, double vx, double Vy, double vy, double M, double m) {
-  double r = sqrt(pow(x[0] - X[0], 2) + pow(x[1] - X[1], 2));
-
-  double Vtot = sqrt(Vx * Vx + Vy * Vy);
-  double vtot = sqrt(vx * vx + vy * vy);
-
-  return m * vtot * vtot / 2.0 + M * Vtot * Vtot / 2.0 - m * M / r;
+double calc_energy(std::vector<double> X, std::vector<double> x, double Vx, double vx, double Vy, double vy, double M, double m) {
+    double r = std::sqrt((X[0] - x[0]) * (X[0] - x[0]) + (X[1] - x[1]) * (X[1] - x[1]));
+    double T = 0.5 * M * (Vx * Vx + Vy * Vy) + 0.5 * m * (vx * vx + vy * vy);
+    double U = -M * m / r;
+    return T + U;
 }
 
-//Function to calculate the C.O.M. of the system
-double calc_com(double M, double m, const std::vector<double> &X, const std::vector<double> &x) {
-  double tot_mass = M + m;
-
-  double rp = sqrt(x[0] * x[0] + x[1] * x[1]);
-  double rs = sqrt(X[0] * X[0] + X[1] * X[1]);
-
-  return (M * rs + m * rp) / tot_mass;
+double calc_momentum(std::vector<double> X, std::vector<double> x, double Vx, double vx, double Vy, double vy) {
+    return (Vx - vx) * (X[1] - x[1]) - (Vy - vy) * (X[0] - x[0]);
 }
 
-//Function to calculate the C.O.M. velocity of the system
+double calc_com(double M, double m, std::vector<double> X, std::vector<double> x) {
+    return (M * X[0] + m * x[0]) / (M + m);
+}
+
 double calc_comv(double M, double m, double Vx, double vx, double Vy, double vy) {
-  double tot_mass = M + m;
-
-  double vp = sqrt(vx * vx + vy * vy);
-  double vs = sqrt(Vx * Vx + Vy * Vy);
-
-  return (M * vs + m * vp) / tot_mass;
+    return (M * Vx + m * vx) / (M + m);
 }
 
-//Function to calculate the angular momentum of the system
 
-double calc_momentum(const std::vector<double> &X, const std::vector<double> &x, double Vx, double vx, double Vy, double vy) {
-  double x_ = x[0] - X[0];
-  double y_ = x[1] - X[1];
-  double v_x = vx - Vx;
-  double v_y = vy - Vy;
 
-  double r = sqrt(x_ * x_ + y_ * y_);
-  double phi = atan2(y_, x_);
 
-  double vrad = v_x * cos(phi) + v_y * sin(phi);
-  double vphi = -v_x * sin(phi) + v_y;
-
-  double phidot = vphi / r;
-  double h = r * r * phidot;
-
-  return h;
-}
-
-//////////////////////
-//Below is the function to run the euler integrator
-//////////////////////
 
 std::pair<std::vector<double>, std::vector<double> > euler_integrator(std::vector<double> X, std::vector<double> x, std::vector<double> V, std::vector<double> v, double tend, double dt, double M, double m) {
   std::vector<double> X_vec, x_vec, Y_vec, y_vec;
   std::vector<double> energy, h, com_x, com_vx;
-  
+
   for (double t = 0; t < tend; t += dt) {
-    auto acceleration = calc_acceleration(X, x, M, m);
+    std::pair<double, double> acceleration = calc_acceleration(X, x, M, m);
     double a = acceleration.first;
     double A = acceleration.second;
 
@@ -114,23 +77,56 @@ std::pair<std::vector<double>, std::vector<double> > euler_integrator(std::vecto
   return std::make_pair(energy_error, h_error);
 }
 
-//Main, which by convention should return an integer value to indicate whether the program ran successfully or not.
+
 int main() {
-  std::vector<double> X = {0, 0, 0};
-  std::vector<double> x = {1, 0, 0};
-  std::vector<double> V = {0, 0, 0};
-  std::vector<double> v = {0, 1, 0};
+  std::vector<double> X(3);
+  X[0] = 0;
+  X[1] = 0;
+  X[2] = 0;
+
+  std::vector<double> x(3);
+  x[0] = 1;
+  x[1] = 0;
+  x[2] = 0;
+
+  std::vector<double> V(3);
+  V[0] = 0;
+  V[1] = 0;
+  V[2] = 0;
+
+  std::vector<double> v(3);
+  v[0] = 0;
+  v[1] = 1;
+  v[2] = 0;
+
   double M = 1 - 3e-6;
   double m = 3e-6;
   double tend = 10;
   double dt = 1e-2;
 
-  std::pair<std::vector<double>, std::vector<double>> result = euler_integrator(X, x, V, v, tend, dt, M, m);
-  std::vector<double> energy = result.first;
-  std::vector<double> energy_error = result.second;
+  std::pair<std::vector<double>, std::vector<double> > result = euler_integrator(X, x, V, v, tend, dt, M, m);
+  std::vector<double> energy_error = result.first;
+  std::vector<double> h_error = result.second;
 
-  return 0; // return 0 to indicate success
+  // Print the resulting energy error and h error
+  std::cout << "Energy error:\n";
+  for (double error : energy_error) {
+    std::cout << error << "\n";
+  }
+
+  std::cout << "h error:\n";
+  for (double error : h_error) {
+    std::cout << error << "\n";
+  }
+
+  return 0;
 }
+
+
+
+
+
+
 
 
 
