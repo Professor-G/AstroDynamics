@@ -63,6 +63,144 @@ The ``calc_momentum`` method calculates the angular momentum of the system given
     orbit.x = np.array([0., 0., 1.])
     orbit._run_()
 
+
+Runge-Kutta
+------------------
+
+The Runge-Kutta methods are a family of numerical methods for approximating the solution of differential equations at every time step, with families of varying accuracy. The forward Euler method is a type of Runge-Kutta method of order one. The fourth-order Runge-Kutta method (RK4) is a common higher-order integrator. Runge-Kutta methods can be explicit or implicit. Implicit methods are more stable than explicit methods, but they require solving a system of algebraic equations. Multistep methods approximate the solution at each step using information from more than one previous step.
+
+**Plot the energy error up to 10 orbits for the Euler and RK4 integrators, using a timestep of 1e-2.**
+
+The integrator parameter can be set to either 'euler' or 'runge-kutta'.
+
+.. code-block:: python
+
+    from AstroDynamics import orbits  
+    import numpy as np 
+
+    #capital letters = SUN, lower case = EARTH
+    M, m = 1.0, 3.0e-6
+    X = np.array([0., 0., 0.])
+    V = np.array([0., 0., 0.])
+    x = np.array([1., 0., 0.])
+    v = np.array([0., 1., 0.])
+
+    dt, tend = 1e-2, 10
+
+    euler = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
+    rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='runge-kutta')
+
+The plot can be visualized as follows:
+
+.. code-block:: python
+
+    plt.plot(euler.timesteps, euler.energy_error, 'blue', marker = '*', label='Euler')
+    plt.plot(rk4.timesteps, rk4.energy_error, 'red', marker = 's', label='Runge-Kutta')
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/euler_vs_rk4.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+
+**Plot the RK4 error in time, for different timesteps (10-1 to 10-4)**
+
+.. code-block:: python
+
+    for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
+        rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='runge-kutta')
+        plt.plot(rk4.timesteps, rk4.energy_error, label=r'$\Delta t$='+str(timestep))
+
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/rk4_timestep.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+    
+We can see that the error decreases with :math:`\Delta t^4`.
+
+
+
+Leapfrog Integrator
+------------------
+
+The Euler method is a straightforward algorithm that approximates a numerical solution to an ordinary differential equation by using a simple forward-difference approximation of the derivative. In contrast, the leapfrog method (aka Kick-Drift-Kick (KDK)) is a more advanced integrator that works on second-order systems whose accelerations are not time-dependent. The leapfrog method propagates the position vectors and velocities at different times, while the Euler method propagates only the position vectors. The leapfrog method uses the value of the velocity at the midpoint of the time interval, whereas the Euler method takes the value of the velocity at the beginning of the interval. Finally, the leapfrog method is symplectic, which means that it preserves the Hamiltonian nature of the system being modeled.
+
+**Compare the error with KDK for different timesteps**
+
+We can set the integrator parameter to 'leapfrog':
+
+.. code-block:: python
+
+    for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
+        lf = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='leapfrog')
+        plt.plot(lf.timesteps, lf.energy_error, label=r'$\Delta t$='+str(timestep))
+
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/lf1.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+
+**Plot the error after one orbit, what is the order of the integrator?**
+
+.. code-block:: python
+
+    lf.tend = 1
+
+    for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
+        lf = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='leapfrog')
+        plt.plot(timestep, lf.energy_error[-1], label=r'$\Delta t$='+str(timestep))
+
+    plt.xlabel(r'$\Delta t$'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/lf2.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+
+**Compare the error for timestep=1e-3 for Euler, RK4, and KDK.**
+
+.. code-block:: python
+
+    dt, tend = 1e-3, 10
+
+    euler = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
+    rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='runge-kutta')
+    lf = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='leapfrog')
+
+    plt.plot(euler.timesteps, euler.energy_error, 'blue', marker = '*', label='Euler')
+    plt.plot(rk4.timesteps, rk4.energy_error, 'red', marker = 's', label='Runge-Kutta')
+    plt.plot(lf.timesteps, lf.energy_error, 'red', marker = 's', label='Leapfrog')
+    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
+    plt.yscale('log')
+    plt.title('Error Growth')
+    plt.legend(prop={'size':14})
+    plt.show()
+
+.. figure:: _static/lf2.png
+    :align: center
+    :class: with-shadow with-border
+    :width: 1600px 
+
 Excercises
 ------------------
 
@@ -197,65 +335,3 @@ The class instance contains the ``approx`` attribute which determines whether th
 
 To eliminate the evolution of the center of mass and constrain it to the origin of the system's frame, the center of mass' position vector should be subtracted from both the Earth and Sun's position vectors shifting the system toward the Sun.
 
-
-Euler vs Runge-Kutta
-------------------
-
-** Plot the energy error up to 10 orbits for the Euler and RK4 integrators, using a timestep of 1e-2. **
-
-The integrator parameter can be set to either 'euler' or 'runge-kutta'.
-
-.. code-block:: python
-
-    from AstroDynamics import orbits  
-    import numpy as np 
-
-    #capital letters = SUN, lower case = EARTH
-    M, m = 1.0, 3.0e-6
-    X = np.array([0., 0., 0.])
-    V = np.array([0., 0., 0.])
-    x = np.array([1., 0., 0.])
-    v = np.array([0., 1., 0.])
-
-    dt, tend = 1e-2, 10
-
-    euler = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
-    rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='runge-kutta')
-
-The plot can be visualized as follows:
-
-.. code-block:: python
-
-    plt.plot(euler.timesteps, euler.energy_error, 'blue', marker = '*', label='Euler')
-    plt.plot(rk4.timesteps, rk4.energy_error, 'red', marker = 's', label='Runge-Kutta')
-    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
-    plt.yscale('log')
-    plt.title('Error Growth')
-    plt.legend(prop={'size':14})
-    plt.show()
-
-.. figure:: _static/euler_vs_rk4.png
-    :align: center
-    :class: with-shadow with-border
-    :width: 1600px 
-
-** Plot the RK4 error in time, for different timesteps (10-1 to 10-4) **
-
-.. code-block:: python
-
-    for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
-        rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='runge-kutta')
-        plt.plot(rk4.timesteps, rk4.energy_error, label=r'$\Delta t$='+str(timestep))
-
-    plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
-    plt.yscale('log')
-    plt.title('Error Growth')
-    plt.legend(prop={'size':14})
-    plt.show()
-
-.. figure:: _static/rk4_timestep.png
-    :align: center
-    :class: with-shadow with-border
-    :width: 1600px 
-    
-We can see that the error decreases with :math:`\Delta t^4`.
