@@ -135,11 +135,23 @@ Leapfrog Integrator
 
 The Euler method is a straightforward algorithm that approximates a numerical solution to an ordinary differential equation by using a simple forward-difference approximation of the derivative. In contrast, the leapfrog method (aka Kick-Drift-Kick (KDK)) is a more advanced integrator that works on second-order systems whose accelerations are not time-dependent. The leapfrog method propagates the position vectors and velocities at different times, while the Euler method propagates only the position vectors. The leapfrog method uses the value of the velocity at the midpoint of the time interval, whereas the Euler method takes the value of the velocity at the beginning of the interval. Finally, the leapfrog method is symplectic, which means that it preserves the Hamiltonian nature of the system being modeled.
 
-**Compare the error with KDK for different timesteps**
+**Compare the error with KDK for different timesteps, up to 10 orbits**
 
 We can set the integrator parameter to 'leapfrog':
 
 .. code-block:: python
+
+    from AstroDynamics import orbits
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    #capital letters = SUN, lower case = EARTH
+    M, m = 1.0, 3.0e-6
+    X = np.array([0., 0., 0.])
+    V = np.array([0., 0., 0.])
+    x = np.array([1., 0., 0.])
+    v = np.array([0., 1., 0.])
+    tend = 10 
 
     for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
         lf = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='leapfrog')
@@ -160,16 +172,16 @@ We can set the integrator parameter to 'leapfrog':
 
 .. code-block:: python
 
-    lf.tend = 1
-
+    tend = 1
+    timesteps, errors = [],[]
     for timestep in [1e-1, 1e-2, 1e-3, 1e-4]:
         lf = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=timestep, tend=tend, integrator='leapfrog')
-        plt.plot(timestep, lf.energy_error[-1], label=r'$\Delta t$='+str(timestep))
+        timesteps.append(timestep), errors.append(lf.energy_error[-1])
 
+    plt.plot(timesteps, errors, 'ro--')
     plt.xlabel(r'$\Delta t$'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
-    plt.yscale('log')
+    plt.yscale('log'), plt.xscale('log')
     plt.title('Error Growth')
-    plt.legend(prop={'size':14})
     plt.show()
 
 .. figure:: _static/lf2.png
@@ -183,20 +195,17 @@ We can set the integrator parameter to 'leapfrog':
 
     dt, tend = 1e-3, 10
 
-    euler = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='euler')
-    rk4 = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='runge-kutta')
-    lf = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator='leapfrog')
+    for integrator in ['euler', 'runge-kutta', 'leapfrog']:
+        orbit = orbits.orbit(M=M, m=m, X=X, V=V, x=x, v=v, dt=dt, tend=tend, integrator=integrator)
+        plt.plot(orbit.timesteps, orbit.energy_error, label=integrator)
 
-    plt.plot(euler.timesteps, euler.energy_error, 'blue', marker = '*', label='Euler')
-    plt.plot(rk4.timesteps, rk4.energy_error, 'red', marker = 's', label='Runge-Kutta')
-    plt.plot(lf.timesteps, lf.energy_error, 'red', marker = 's', label='Leapfrog')
     plt.xlabel('Time'), plt.ylabel(r'|$\Delta \rm E / \rm E_0|$')
     plt.yscale('log')
     plt.title('Error Growth')
     plt.legend(prop={'size':14})
     plt.show()
 
-.. figure:: _static/lf2.png
+.. figure:: _static/lf3.png
     :align: center
     :class: with-shadow with-border
     :width: 1600px 
