@@ -192,10 +192,10 @@ class orbit:
       a2, A2 = self.calc_acceleration(x=x2, X=X2)
 
       # Intermediate velocities and positions using k3 values
-      x3 = self.x + v2*self.dt
-      X3 = self.X + V2*self.dt
-      v3 = self.v + a2*self.dt
-      V3 = self.V + A2*self.dt
+      x3 = self.x + v2*self.dt/2
+      X3 = self.X + V2*self.dt/2
+      v3 = self.v + a2*self.dt/2
+      V3 = self.V + A2*self.dt/2
     
       # Recalculate acceleration using intermediate positions and velocities
       a3, A3 = self.calc_acceleration(x=x3, X=X3)

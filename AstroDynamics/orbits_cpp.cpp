@@ -39,8 +39,6 @@ double calc_comv(double M, double m, double Vx, double vx, double Vy, double vy)
     return (M * Vx + m * vx) / (M + m);
 }
 
-
-
 //////////////////////
 //Below is the function to run the euler integrator
 //////////////////////
