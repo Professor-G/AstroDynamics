@@ -149,25 +149,13 @@ int main() {
   std::pair<std::vector<double>, std::vector<double> > result = RK4_integrator(X, x, V, v, tend, dt, M, m);
   std::vector<double> energy_error = result.first;
   std::vector<double> h_error = result.second;
-
+  
   // Print the resulting energy error and h error
-  std::cout << "Energy error:\n";
-  for (double error : energy_error) {
-    std::cout << error << "\n";
+    std::cout << "Time\tTimestep\tX1\tX2\tX3\tV1\tV2\tV3\n";
+    for (int i = 0; i < energy_error.size(); i++) {
+    double time = i * dt;
+        std::cout << time << "\t" << dt << "\t" << X[0] << "\t" << X[1] << "\t" << X[2] << "\t" << V[0] << "\t" << V[1] << "\t" << V[2] << "\n";
   }
 
-  std::cout << "h error:\n";
-  for (double error : h_error) {
-    std::cout << error << "\n";
-  }
-
-  return 0;
+return 0;
 }
-
-
-
-
-
-
-
-
