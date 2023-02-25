@@ -72,14 +72,14 @@ class orbit:
     """
 
     if isinstance(self.integrator, str) is False:
-      raise ValueError("integrator parameter must be 'euler' or !")
+      raise ValueError("integrator parameter must be 'euler' or 'runge-kutta' or 'leapfrog'!")
 
     if self.integrator == 'euler':
       self.euler_integrator()
     elif self.integrator == 'runge-kutta':
       self.runge_kutta_integrator()
     elif self.integrator == 'leapfrog':
-        self.leapfrog_integrator()
+      self.leapfrog_integrator()
 
   def euler_integrator(self):
     """Executes the Euler integration method and calculates time taken to complete.
@@ -473,7 +473,7 @@ class orbit:
         AxesImage: The resulting plot.
     """
 
-    plt.plot(self.x_vec, self.y_vec, 'blue', label = 'Earth')
+    plt.plot(self.x_vec, self.y_vec, 'blue', label = 'Body')
     plt.plot(self.X_vec, self.Y_vec, 'orange', label = "Sun")
     plt.xlabel("X"), plt.ylabel("Y")
     plt.legend()
@@ -537,6 +537,33 @@ class orbit:
       print('Image saved in: {}'.format(self.path))
 
     return 
+
+def return_halley(e = 0.967, r_aphelion=1.0):
+    """
+    Function to return the position and velocity vectors of Halley's comet
+
+    Args:
+        e (float): Eccentricity.
+        r_aphelion (float): Aphelion distance of the comet.
+
+    Returns:
+        Two arrays, the position and velocity vectors (x & y) of the comet, with z=0.
+    """
+
+    sma = r_aphelion / (1 + e)
+    mean_motion = 1.0 / sma**1.5
+    vcirc = mean_motion * sma
+    
+    # Initial conditions
+    x = np.zeros((2, 3))
+    v = np.zeros((2, 3))
+
+    x[0, :] = [0, 0, 0]
+    x[1, :] = [1, 0, 0]
+    v[0, :] = [0, 0, 0]
+    v[1, :] = [0, vcirc * np.sqrt((1 - e) / (1 + e)), 0]
+
+    return x[1, :], v[1, :]
 
 def _set_style_():
   """Function to configure the matplotlib.pyplot style. This function is called before any images are saved.
